@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import glob
 import os
@@ -233,26 +233,19 @@ async def dler(event, url, opts: dict = {}, download=False):
         opts["quiet"] = True
     opts["username"] = udB.get_key("YT_USERNAME")
     opts["password"] = udB.get_key("YT_PASSWORD")
-    if download:
-        await ytdownload(url, opts)
     try:
-        return await extract_info(url, opts)
+        # Single API call: extract_info(download=True) downloads AND returns info
+        # Using two separate calls (ytdownload + extract_info) causes YouTube's
+        # JS challenge to be solved TWICE, which is why it appeared to "loop"
+        return await extract_info(url, opts, download)
     except Exception as e:
         await event.edit(f"{type(e)}: {e}")
         return
 
 
 @run_async
-def ytdownload(url, opts):
-    try:
-        return YoutubeDL(opts).download([url])
-    except Exception as ex:
-        LOGS.error(ex)
-
-
-@run_async
-def extract_info(url, opts):
-    return YoutubeDL(opts).extract_info(url=url, download=False)
+def extract_info(url, opts, download=False):
+    return YoutubeDL(opts).extract_info(url=url, download=download)
 
 
 @run_async

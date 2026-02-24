@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 from importlib import util
 from sys import modules
@@ -86,14 +86,15 @@ def load_addons(plugin_name):
     spec.loader.exec_module(mod)
     modules[name] = mod
     doc = modules[name].__doc__.format(i=HNDLR) if modules[name].__doc__ else ""
-    if "Addons" in HELP.keys():
-        update_cmd = HELP["Addons"]
+    cat = "Addons"
+    if cat in HELP.keys():
+        update_cmd = HELP[cat]
         try:
             update_cmd.update({base_name: doc})
         except BaseException:
             pass
     else:
         try:
-            HELP.update({"Addons": {base_name: doc}})
+            HELP.update({cat: {base_name: doc}})
         except BaseException as em:
             pass

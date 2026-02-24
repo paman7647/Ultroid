@@ -15,7 +15,7 @@ from pyUltroid.fns.tools import get_chatbot_reply
 from . import LOGS, eod, get_string, inline_mention, udB, ultroid_cmd
 
 
-@ultroid_cmd(pattern="repai")
+@ultroid_cmd(pattern="repai", category="Tools")
 async def im_lonely_chat_with_me(event):
     if event.reply_to:
         message = (await event.get_reply_message()).message
@@ -28,17 +28,17 @@ async def im_lonely_chat_with_me(event):
     await event.eor(reply_)
 
 
-@ultroid_cmd(pattern="addai")
+@ultroid_cmd(pattern="addai", category="Tools")
 async def add_chatBot(event):
     await chat_bot_fn(event, type_="add")
 
 
-@ultroid_cmd(pattern="remai")
+@ultroid_cmd(pattern="remai", category="Tools")
 async def rem_chatBot(event):
     await chat_bot_fn(event, type_="remov")
 
 
-@ultroid_cmd(pattern="listai")
+@ultroid_cmd(pattern="listai", category="Tools")
 async def lister(event):
     key = udB.get_key("CHATBOT_USERS") or {}
     users = key.get(event.chat_id, [])

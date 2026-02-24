@@ -231,7 +231,24 @@ _convo = {
         "text": "Send the Fed IDs you want to exclude in the ban. Split by a space.\neg`id1 id2 id3`\nSet is as `None` if you dont want any.\nUse /cancel to go back.",
         "back": "cbs_sfban",
     },
+    "add_sudo": {
+        "var": "SUDO_USERS",
+        "name": "Sudo User",
+        "text": "Send the User ID of the user you want to add as Sudo.",
+        "back": "user_mgr",
+    },
 }
+
+
+@callback(re.compile("rem_sudo_(.*)"), owner=True)
+async def rem_sudo_call(event):
+    uid = int(event.data_match.group(1).decode("utf-8"))
+    sudos = udB.get_key("SUDO_USERS") or []
+    if uid in sudos:
+        sudos.remove(uid)
+        udB.set_key("SUDO_USERS", sudos)
+        await event.answer(f"User {uid} removed from Sudos.", alert=True)
+    await event.edit("User Manager", buttons=[[Button.inline("➖ Remove Another", data="rem_sudo_list")], get_back_button("user_mgr")])
 
 
 TOKEN_FILE = "resources/auths/auth_token.txt"

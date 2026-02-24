@@ -32,7 +32,7 @@ from . import events, get_string, mediainfo, udB, ultroid_bot, ultroid_cmd
 from ._inline import something
 
 
-@ultroid_cmd(pattern="addnote( (.*)|$)", admins_only=True)
+@ultroid_cmd(pattern="addnote( (.*)|$)", category="Admin", admins_only=True)
 async def an(e):
     wrd = (e.pattern_match.group(1).strip()).lower()
     wt = await e.get_reply_message()
@@ -72,7 +72,7 @@ async def an(e):
     ultroid_bot.add_handler(notes, events.NewMessage())
 
 
-@ultroid_cmd(pattern="remnote( (.*)|$)", admins_only=True)
+@ultroid_cmd(pattern="remnote( (.*)|$)", category="Admin", admins_only=True)
 async def rn(e):
     wrd = (e.pattern_match.group(1).strip()).lower()
     chat = e.chat_id
@@ -84,7 +84,7 @@ async def rn(e):
     await e.eor(f"Done Note: `#{wrd}` Removed.")
 
 
-@ultroid_cmd(pattern="listnote$", admins_only=True)
+@ultroid_cmd(pattern="listnote$", category="Admin", admins_only=True)
 async def lsnote(e):
     if x := list_note(e.chat_id):
         sd = "Notes Found In This Chats Are\n\n"

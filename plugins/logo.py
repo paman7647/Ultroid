@@ -29,7 +29,7 @@ from pyUltroid.fns.tools import LogoHelper
 from . import OWNER_ID, OWNER_NAME, download_file, get_string, mediainfo, ultroid_cmd
 
 
-@ultroid_cmd(pattern="logo( (.*)|$)")
+@ultroid_cmd(pattern="logo( (.*)|$)", category="Media")
 async def logo_gen(event):
     xx = await event.eor(get_string("com_1"))
     name = event.pattern_match.group(1).strip()

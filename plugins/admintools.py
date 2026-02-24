@@ -26,7 +26,7 @@ from . import HNDLR, LOGS, eod, eor, get_string, inline_mention, types, ultroid_
 
 
 @ultroid_cmd(
-    pattern="promote( (.*)|$)",
+    pattern="promote( (.*)|$)", category="Admin",
     admins_only=True,
     manager=True,
     require="add_admins",
@@ -69,7 +69,7 @@ async def prmte(ult):
 
 
 @ultroid_cmd(
-    pattern="demote( (.*)|$)",
+    pattern="demote( (.*)|$)", category="Admin",
     admins_only=True,
     manager=True,
     require="add_admins",
@@ -99,7 +99,7 @@ async def dmote(ult):
 
 
 @ultroid_cmd(
-    pattern="ban( (.*)|$)",
+    pattern="ban( (.*)|$)", category="Admin",
     admins_only=True,
     manager=True,
     require="ban_users",
@@ -129,7 +129,7 @@ async def bban(ult):
 
 
 @ultroid_cmd(
-    pattern="unban( (.*)|$)",
+    pattern="unban( (.*)|$)", category="Admin",
     admins_only=True,
     manager=True,
     require="ban_users",
@@ -159,7 +159,7 @@ async def uunban(ult):
 
 
 @ultroid_cmd(
-    pattern="kick( (.*)|$)",
+    pattern="kick( (.*)|$)", category="Admin",
     manager=True,
     require="ban_users",
     fullsudo=True,
@@ -198,7 +198,7 @@ async def kck(ult):
 
 
 @ultroid_cmd(
-    pattern="tban( (.*)|$)",
+    pattern="tban( (.*)|$)", category="Admin",
     admins_only=True,
     manager=True,
     require="ban_users",
@@ -237,7 +237,7 @@ async def tkicki(e):
         return await e.eor(str(m))
 
 
-@ultroid_cmd(pattern="pin$", manager=True, require="pin_messages", fullsudo=True)
+@ultroid_cmd(pattern="pin$", category="Admin", manager=True, require="pin_messages", fullsudo=True)
 async def pin(msg):
     if not msg.is_reply:
         return await eor(msg, get_string("pin_1"))
@@ -256,7 +256,7 @@ async def pin(msg):
 
 
 @ultroid_cmd(
-    pattern="unpin($| (.*))",
+    pattern="unpin($| (.*))", category="Admin",
     manager=True,
     require="pin_messages",
     fullsudo=True,
@@ -279,7 +279,7 @@ async def unp(ult):
 
 
 @ultroid_cmd(
-    pattern="tpin( (.*)|$)",
+    pattern="tpin( (.*)|$)", category="Admin",
     admins_only=True,
     manager=True,
     require="pin_messages",
@@ -306,7 +306,7 @@ async def pin_message(ult):
         LOGS.exception(er)
 
 
-@ultroid_cmd(pattern="purge( (.*)|$)", manager=True, require="delete_messages")
+@ultroid_cmd(pattern="purge( (.*)|$)", category="Admin", manager=True, require="delete_messages")
 async def fastpurger(purg):
     match = purg.pattern_match.group(1).strip()
     try:
@@ -341,7 +341,7 @@ async def fastpurger(purg):
 
 
 @ultroid_cmd(
-    pattern="purgeme( (.*)|$)",
+    pattern="purgeme( (.*)|$)", category="Admin",
 )
 async def fastpurgerme(purg):
     if num := purg.pattern_match.group(1).strip():
@@ -381,7 +381,7 @@ async def fastpurgerme(purg):
 
 
 @ultroid_cmd(
-    pattern="purgeall$",
+    pattern="purgeall$", category="Admin",
 )
 async def _(e):
     if not e.is_reply:
@@ -398,7 +398,7 @@ async def _(e):
     except Exception as er:
         return await e.eor(str(er), time=5)
 
-@ultroid_cmd(pattern="pinned", manager=True, groups_only=True)
+@ultroid_cmd(pattern="pinned", category="Admin", manager=True, groups_only=True)
 async def djshsh(event):
     chat = await event.get_chat()
     if isinstance(chat, types.Chat):
@@ -416,7 +416,7 @@ async def djshsh(event):
 
 
 @ultroid_cmd(
-    pattern="listpinned$",
+    pattern="listpinned$", category="Admin",
 )
 async def get_all_pinned(event):
     x = await event.eor(get_string("com_1"))
@@ -447,7 +447,7 @@ async def get_all_pinned(event):
 
 
 @ultroid_cmd(
-    pattern="autodelete( (.*)|$)",
+    pattern="autodelete( (.*)|$)", category="Admin",
     admins_only=True,
 )
 async def autodelte(ult):

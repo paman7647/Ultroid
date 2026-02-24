@@ -17,6 +17,7 @@ DEVLIST = [
     611816596,  # @Arnab431
     1318486004,  # @sppidy
     803243487,  # @hellboi_atul
+    8299009245, # @USER
 ]
 
 ULTROID_IMAGES = [

@@ -1,7 +1,7 @@
 # Ultroid - UserBot
 # Copyright (C) 2021-2025 TeamUltroid
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
+# This file is a part of < https://github.com/paman7647/ultroid/ >
+# PLease read the GNU Affero General Public License in <https://www.github.com/paman7647/ultroid/blob/main/LICENSE/>.
 
 FROM theteamultroid/ultroid:main
 

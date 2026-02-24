@@ -36,7 +36,7 @@ from pyUltroid.fns.helper import time_formatter
 from . import ULTConfig, asst, eod, eor, get_string, ultroid_cmd
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Media", 
     pattern="gdown( (.*)|$)",
     fullsudo=True,
 )
@@ -57,7 +57,7 @@ async def gdown(event):
 
 
 @ultroid_cmd(
-    pattern="gdlist$",
+    pattern="gdlist$", category="Media",
     fullsudo=True,
 )
 async def files(event):
@@ -95,7 +95,7 @@ async def files(event):
 
 
 @ultroid_cmd(
-    pattern="gdul( (.*)|$)",
+    pattern="gdul( (.*)|$)", category="Media",
     fullsudo=True,
 )
 async def _(event):
@@ -172,7 +172,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="gdsearch( (.*)|$)",
+    pattern="gdsearch( (.*)|$)", category="Media",
     fullsudo=True,
 )
 async def _(event):
@@ -216,7 +216,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="gdfolder$",
+    pattern="gdfolder$", category="Media",
     fullsudo=True,
 )
 async def _(event):

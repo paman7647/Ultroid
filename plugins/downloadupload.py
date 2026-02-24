@@ -35,7 +35,7 @@ from . import (
 )
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Media", 
     pattern="download( (.*)|$)",
 )
 async def down(event):
@@ -70,7 +70,7 @@ async def down(event):
 
 
 @ultroid_cmd(
-    pattern="dl( (.*)|$)",
+    pattern="dl( (.*)|$)", category="Media",
 )
 async def download(event):
     match = event.pattern_match.group(1).strip()
@@ -131,7 +131,7 @@ async def download(event):
 
 
 @ultroid_cmd(
-    pattern="ul( (.*)|$)",
+    pattern="ul( (.*)|$)", category="Media",
 )
 async def _(event):
     msg = await event.eor(get_string("com_1"))

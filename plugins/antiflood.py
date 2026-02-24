@@ -82,7 +82,7 @@ async def unmuting(e):
     )
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Admin", 
     pattern="setflood ?(\\d+)",
     admins_only=True,
 )
@@ -97,7 +97,7 @@ async def setflood(e):
 
 
 @ultroid_cmd(
-    pattern="remflood$",
+    pattern="remflood$", category="Admin",
     admins_only=True,
 )
 async def remove_flood(e):
@@ -112,7 +112,7 @@ async def remove_flood(e):
 
 
 @ultroid_cmd(
-    pattern="getflood$",
+    pattern="getflood$", category="Admin",
     admins_only=True,
 )
 async def getflood(e):

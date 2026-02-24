@@ -98,7 +98,7 @@ async def get_google_images(query: str):
         return []
 
 
-@ultroid_cmd(pattern="autopic( (.*)|$)")
+@ultroid_cmd(pattern="autopic( (.*)|$)", category="Tools")
 async def autopic(e):
     search = e.pattern_match.group(1).strip()
     if udB.get_key("AUTOPIC") and not search:

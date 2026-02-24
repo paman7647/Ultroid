@@ -37,7 +37,7 @@ from . import HNDLR, LOGS, asst, con, get_string, mediainfo, os, types, udB, ult
 
 
 @ultroid_cmd(
-    pattern="delchat",
+    pattern="delchat", category="Owner",
     groups_only=True,
 )
 async def _(e):
@@ -59,7 +59,7 @@ async def _(e):
 
 
 @ultroid_cmd(
-    pattern="getlink( (.*)|$)",
+    pattern="getlink( (.*)|$)", category="Owner",
     groups_only=True,
     manager=True,
 )
@@ -120,7 +120,7 @@ async def _(e):
 
 
 @ultroid_cmd(
-    pattern="create (b|g|c)(?: |$)(.*)",
+    pattern="create (b|g|c)(?: |$)(.*)", category="Owner",
 )
 async def _(e):
     type_of_group = e.pattern_match.group(1).strip()
@@ -185,7 +185,7 @@ async def _(e):
 
 
 @ultroid_cmd(
-    pattern="setgpic( (.*)|$)", admins_only=True, manager=True, require="change_info"
+    pattern="setgpic( (.*)|$)", category="Owner", admins_only=True, manager=True, require="change_info"
 )
 async def _(ult):
     if not ult.is_reply:
@@ -224,7 +224,7 @@ async def _(ult):
 
 
 @ultroid_cmd(
-    pattern="delgpic( (.*)|$)", admins_only=True, manager=True, require="change_info"
+    pattern="delgpic( (.*)|$)", category="Owner", admins_only=True, manager=True, require="change_info"
 )
 async def _(ult):
     match = ult.pattern_match.group(1).strip()
@@ -239,7 +239,7 @@ async def _(ult):
     return await ult.eor(text, time=5)
 
 
-@ultroid_cmd(pattern="unbanall$", manager=True, admins_only=True, require="ban_users")
+@ultroid_cmd(pattern="unbanall$", category="Owner", manager=True, admins_only=True, require="ban_users")
 async def _(event):
     xx = await event.eor("Searching Participant Lists.")
     p = 0
@@ -260,7 +260,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="rmusers( (.*)|$)",
+    pattern="rmusers( (.*)|$)", category="Owner",
     groups_only=True,
     admins_only=True,
     fullsudo=True,

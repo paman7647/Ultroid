@@ -51,7 +51,7 @@ if HOSTED_ON == "heroku":
         LOGS.exception(er)
 
 
-@ultroid_cmd(pattern="usage")
+@ultroid_cmd(pattern="usage", category="Owner")
 async def usage_finder(event):
     x = await event.eor(get_string("com_1"))
     try:

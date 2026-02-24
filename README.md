@@ -13,14 +13,25 @@
 [![Size](https://img.shields.io/github/repo-size/TeamUltroid/Ultroid?style=flat-square&color=green)](https://github.com/TeamUltroid/Ultroid/)   
 [![Python](https://img.shields.io/badge/Python-v3.10.3-blue)](https://www.python.org/)
 [![CodeFactor](https://www.codefactor.io/repository/github/teamultroid/ultroid/badge/main)](https://www.codefactor.io/repository/github/teamultroid/ultroid/overview/main)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/TeamUltroid/Ultroid/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/paman7647/ultroid/graphs/commit-activity)
 [![Docker Pulls](https://img.shields.io/docker/pulls/theteamultroid/ultroid?style=flat-square)](https://img.shields.io/docker/pulls/theteamultroid/ultroid?style=flat-square)   
-[![Open Source Love svg2](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/TeamUltroid/Ultroid)
+[![Open Source Love svg2](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/paman7647/ultroid)
 [![Contributors](https://img.shields.io/github/contributors/TeamUltroid/Ultroid?style=flat-square&color=green)](https://github.com/TeamUltroid/Ultroid/graphs/contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
-[![License](https://img.shields.io/badge/License-AGPL-blue)](https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE)   
+[![License](https://img.shields.io/badge/License-AGPL-blue)](https://github.com/paman7647/ultroid/blob/main/LICENSE)   
 [![Sparkline](https://stars.medv.io/Teamultroid/Ultroid.svg)](https://stars.medv.io/TeamUltroid/Ultroid)
 ----
+
+# Maintainers
+- **Aman Kumar Pandey** ([@paman7647](https://github.com/paman7647))
+
+----
+
+### [Nᴇᴡ - Mᴀɪɴᴛᴀɪɴᴇᴅ Version](https://github.com/paman7647/ultroid)
+**Deploy the most up-to-date and stabilized version of Ultroid from our new maintained fork.**
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/paman7647/ultroid?template=https://github.com/paman7647/ultroid)
+
+---
 
 # Deploy
 - [Heroku](#deploy-to-heroku)
@@ -42,14 +53,14 @@ Get the [Necessary Variables](#Necessary-Variables) and then click the button be
 <summary>Deploy To Heroku</summary>
 <p>
 <br>
-<a href="https://heroku.com/deploy">
+<a href="https://heroku.com/deploy?template=https://github.com/paman7647/ultroid">
   <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
 </a>
 </p>
 ## Deploy to Okteto
 Get the [Necessary Variables](#Necessary-Variables) and then click the button below!
 
-[![Develop on Okteto](https://okteto.com/develop-okteto.svg)](https://cloud.okteto.com/deploy?repository=https://github.com/TeamUltroid/Ultroid)
+[![Develop on Okteto](https://okteto.com/develop-okteto.svg)](https://cloud.okteto.com/deploy?repository=https://github.com/paman7647/ultroid)
 
 ## Deploy Locally
 - [Traditional Method](#local-deploy---traditional-method)
@@ -64,7 +75,7 @@ Get the [Necessary Variables](#Necessary-Variables) and then click the button be
 ### Local Deploy - Traditional Method
 - Get your [Necessary Variables](#Necessary-Variables)
 - Clone the repository:    
-`git clone https://github.com/TeamUltroid/Ultroid.git`
+`git clone https://github.com/paman7647/ultroid.git`
 - Go to the cloned folder:    
 `cd Ultroid`
 - Create a virtual env:      
@@ -82,7 +93,7 @@ Get the [Necessary Variables](#Necessary-Variables) and then click the button be
     `wget -O session.py https://git.io/JY9JI && python session.py`
   - For Windows Users:
     `cd desktop ; wget https://git.io/JY9JI -o ultroid.py ; python ultroid.py`
-- Fill your details in a `.env` file, as given in [`.env.sample`](https://github.com/TeamUltroid/Ultroid/blob/main/.env.sample).
+- Fill your details in a `.env` file, as given in [`.env.sample`](https://github.com/paman7647/ultroid/blob/main/.env.sample).
 (You can either edit and rename the file or make a new file named `.env`.)
 - Run the bot:
   - Linux Users:
@@ -105,7 +116,7 @@ One of the following database:
 
 ## Session String
 Different ways to get your `SESSION`:
-* [![Run on Repl.it](https://replit.com/badge/github/TeamUltroid/Ultroid)](https://replit.com/@TeamUltroid/UltroidStringSession)
+* [![Run on Repl.it](https://replit.com/badge/github/paman7647/ultroid)](https://replit.com/@paman7647/ultroidStringSession)
 * Linux : `wget -O session.py https://git.io/JY9JI && python3 session.py`
 * PowerShell : `cd desktop ; wget https://git.io/JY9JI ; python ultroid.py`
 * Termux : `wget -O session.py https://git.io/JY9JI && python session.py`
@@ -135,8 +146,8 @@ Different ways to get your `SESSION`:
 
 ## Contributors
 
-<a href="https://github.com/TeamUltroid/Ultroid/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=TeamUltroid/Ultroid" />
+<a href="https://github.com/paman7647/ultroid/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=paman7647/ultroid" />
 </a>
 
 We are highly grateful for all the contributions made by our amazing community! ❤️

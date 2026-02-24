@@ -17,7 +17,7 @@ from pyUltroid.fns.tools import get_file_link
 from . import HNDLR, asst, get_string, in_pattern, udB, ultroid_bot, ultroid_cmd
 
 
-@ultroid_cmd(pattern="store$")
+@ultroid_cmd(pattern="store$", category="Media")
 async def filestoreplg(event):
     msg = await event.get_reply_message()
     if not msg:
@@ -31,7 +31,7 @@ async def filestoreplg(event):
     )
 
 
-@ultroid_cmd("delstored ?(.*)")
+@ultroid_cmd("delstored ?(.*)", category="Media")
 async def _(event):
     match = event.pattern_match.group(1)
     if not match:
@@ -52,7 +52,7 @@ async def _(event):
     await event.eor("__Deleted__")
 
 
-@ultroid_cmd("liststored$")
+@ultroid_cmd("liststored$", category="Media")
 async def liststored(event):
     files = list_all_stored_msgs()
     if not files:

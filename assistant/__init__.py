@@ -32,3 +32,14 @@ async def setit(event, name, value):
 
 def get_back_button(name):
     return [Button.inline("« Bᴀᴄᴋ", data=f"{name}")]
+
+from . import (
+    start,
+    callbackstuffs,
+    dashboard,
+    security,
+    ai_menu,
+    plugin_manager,
+    user_manager,
+    bot_control,
+)

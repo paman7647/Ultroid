@@ -92,7 +92,7 @@ _gdemote_rights = ChatAdminRights(
 keym = KeyManager("GBLACKLISTS", cast=list)
 
 
-@ultroid_cmd(pattern="gpromote( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="gpromote( (.*)|$)", category="Tools", fullsudo=True)
 async def _(e):
     x = e.pattern_match.group(1).strip()
     ultroid_bot = e.client
@@ -200,7 +200,7 @@ async def _(e):
         await eor(ev, f"Promoted {name.first_name} in Total : {c} {key} chats.")
 
 
-@ultroid_cmd(pattern="gdemote( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="gdemote( (.*)|$)", category="Tools", fullsudo=True)
 async def _(e):
     x = e.pattern_match.group(1).strip()
     ultroid_bot = e.client
@@ -285,7 +285,7 @@ async def _(e):
         await eor(ev, f"Demoted {name.first_name} in Total : {c} {key} chats.")
 
 
-@ultroid_cmd(pattern="ungban( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="ungban( (.*)|$)", category="Tools", fullsudo=True)
 async def _(e):
     xx = await e.eor("`UnGbanning...`")
     match = e.pattern_match.group(1).strip()
@@ -349,7 +349,7 @@ async def _(e):
     )
 
 
-@ultroid_cmd(pattern="gban( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="gban( (.*)|$)", category="Tools", fullsudo=True)
 async def _(e):
     xx = await e.eor("`Gbanning...`")
     reason = ""
@@ -430,7 +430,7 @@ async def _(e):
     await xx.edit(gb_msg)
 
 
-@ultroid_cmd(pattern="g(admin|)cast( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="g(admin|)cast( (.*)|$)", category="Tools", fullsudo=True)
 async def gcast(event):
     text, btn, reply = "", None, None
     if xx := event.pattern_match.group(2):
@@ -516,7 +516,7 @@ async def gcast(event):
     await kk.edit(text)
 
 
-@ultroid_cmd(pattern="gucast( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="gucast( (.*)|$)", category="Tools", fullsudo=True)
 async def gucast(event):
     msg, btn, reply = "", None, None
     if xx := event.pattern_match.group(1).strip():
@@ -565,7 +565,7 @@ async def gucast(event):
     await kk.edit(f"Done in {done} chats, error in {er} chat(s)")
 
 
-@ultroid_cmd(pattern="gkick( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="gkick( (.*)|$)", category="Tools", fullsudo=True)
 async def gkick(e):
     xx = await e.eor("`Gkicking...`")
     if e.reply_to_msg_id:
@@ -597,7 +597,7 @@ async def gkick(e):
     await xx.edit(f"`Gkicked` [{name}](tg://user?id={userid}) `in {chats} chats.`")
 
 
-@ultroid_cmd(pattern="gmute( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="gmute( (.*)|$)", category="Tools", fullsudo=True)
 async def _(e):
     xx = await e.eor("`Gmuting...`")
     if e.reply_to_msg_id:
@@ -632,7 +632,7 @@ async def _(e):
     await xx.edit(f"`Gmuted` {inline_mention(name)} `in {chats} chats.`")
 
 
-@ultroid_cmd(pattern="ungmute( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="ungmute( (.*)|$)", category="Tools", fullsudo=True)
 async def _(e):
     xx = await e.eor("`UnGmuting...`")
     if e.reply_to_msg_id:
@@ -664,7 +664,7 @@ async def _(e):
 
 
 @ultroid_cmd(
-    pattern="listgban$",
+    pattern="listgban$", category="Tools",
 )
 async def list_gengbanned(event):
     users = list_gbanned()
@@ -700,7 +700,7 @@ async def list_gengbanned(event):
 
 
 @ultroid_cmd(
-    pattern="gstat( (.*)|$)",
+    pattern="gstat( (.*)|$)", category="Tools",
 )
 async def gstat_(e):
     xx = await e.eor(get_string("com_1"))
@@ -727,12 +727,12 @@ async def gstat_(e):
     await xx.edit(msg)
 
 
-@ultroid_cmd(pattern="gblacklist$")
+@ultroid_cmd(pattern="gblacklist$", category="Tools")
 async def blacklist_(event):
     await gblacker(event, "add")
 
 
-@ultroid_cmd(pattern="ungblacklist$")
+@ultroid_cmd(pattern="ungblacklist$", category="Tools")
 async def ungblacker(event):
     await gblacker(event, "remove")
 

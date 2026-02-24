@@ -18,7 +18,7 @@ from telethon import events, utils
 from . import asst, get_string, mediainfo, udB, ultroid_cmd, upload_file
 
 
-@ultroid_cmd(pattern="addcmd( (.*)|$)")
+@ultroid_cmd(pattern="addcmd( (.*)|$)", category="Owner")
 async def ac(e):
     wrd = (e.pattern_match.group(1).strip()).lower()
     wt = await e.get_reply_message()
@@ -62,7 +62,7 @@ async def ac(e):
     await e.eor(get_string("asstcmd_4").format(wrd))
 
 
-@ultroid_cmd(pattern="remcmd( (.*)|$)")
+@ultroid_cmd(pattern="remcmd( (.*)|$)", category="Owner")
 async def rc(e):
     wrd = (e.pattern_match.group(1).strip()).lower()
     if not wrd:
@@ -72,7 +72,7 @@ async def rc(e):
     await e.eor(get_string("asstcmd_3").format(wrd))
 
 
-@ultroid_cmd(pattern="listcmd$")
+@ultroid_cmd(pattern="listcmd$", category="Owner")
 async def lscmd(e):
     if list_cmds():
         ok = get_string("asstcmd_6")

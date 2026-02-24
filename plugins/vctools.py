@@ -42,7 +42,7 @@ def user_list(l, n):
         yield l[i : i + n]
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Media", 
     pattern="stopvc$",
     admins_only=True,
     groups_only=True,
@@ -56,7 +56,7 @@ async def _(e):
 
 
 @ultroid_cmd(
-    pattern="vcinvite$",
+    pattern="vcinvite$", category="Media",
     groups_only=True,
 )
 async def _(e):
@@ -77,7 +77,7 @@ async def _(e):
 
 
 @ultroid_cmd(
-    pattern="startvc$",
+    pattern="startvc$", category="Media",
     admins_only=True,
     groups_only=True,
 )
@@ -90,7 +90,7 @@ async def _(e):
 
 
 @ultroid_cmd(
-    pattern="vctitle(?: |$)(.*)",
+    pattern="vctitle(?: |$)(.*)", category="Media",
     admins_only=True,
     groups_only=True,
 )

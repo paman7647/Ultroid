@@ -32,7 +32,7 @@ from . import events, get_string, mediainfo, udB, ultroid_bot, ultroid_cmd
 from ._inline import something
 
 
-@ultroid_cmd(pattern="addsnip( (.*)|$)")
+@ultroid_cmd(pattern="addsnip( (.*)|$)", category="Tools")
 async def an(e):
     wrd = (e.pattern_match.group(1).strip()).lower()
     wt = await e.get_reply_message()
@@ -71,7 +71,7 @@ async def an(e):
     ultroid_bot.add_handler(add_snips, events.NewMessage())
 
 
-@ultroid_cmd(pattern="remsnip( (.*)|$)")
+@ultroid_cmd(pattern="remsnip( (.*)|$)", category="Tools")
 async def rs(e):
     wrd = (e.pattern_match.group(1).strip()).lower()
     if not wrd:
@@ -82,7 +82,7 @@ async def rs(e):
     await e.eor(f"Done : snip `${wrd}` Removed.")
 
 
-@ultroid_cmd(pattern="listsnip")
+@ultroid_cmd(pattern="listsnip", category="Tools")
 async def lsnote(e):
     if x := list_snip():
         sd = "SNIPS Found :\n\n"

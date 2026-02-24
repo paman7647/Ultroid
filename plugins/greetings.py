@@ -54,7 +54,7 @@ from ._inline import something
 Note = "\n\nNote: `{mention}`, `{group}`, `{count}`, `{name}`, `{fullname}`, `{username}`, `{userid}` can be used as formatting parameters.\n\n"
 
 
-@ultroid_cmd(pattern="setwelcome", groups_only=True)
+@ultroid_cmd(pattern="setwelcome", category="Admin", groups_only=True)
 async def setwel(event):
     x = await event.eor(get_string("com_1"))
     r = await event.get_reply_message()
@@ -96,7 +96,7 @@ async def setwel(event):
         await eor(x, get_string("grt_3"), time=5)
 
 
-@ultroid_cmd(pattern="clearwelcome$", groups_only=True)
+@ultroid_cmd(pattern="clearwelcome$", category="Admin", groups_only=True)
 async def clearwel(event):
     if not get_welcome(event.chat_id):
         return await event.eor(get_string("grt_4"), time=5)
@@ -104,7 +104,7 @@ async def clearwel(event):
     await event.eor(get_string("grt_5"), time=5)
 
 
-@ultroid_cmd(pattern="getwelcome$", groups_only=True)
+@ultroid_cmd(pattern="getwelcome$", category="Admin", groups_only=True)
 async def listwel(event):
     wel = get_welcome(event.chat_id)
     if not wel:
@@ -117,7 +117,7 @@ async def listwel(event):
     await event.delete()
 
 
-@ultroid_cmd(pattern="setgoodbye", groups_only=True)
+@ultroid_cmd(pattern="setgoodbye", category="Admin", groups_only=True)
 async def setgb(event):
     x = await event.eor(get_string("com_1"))
     r = await event.get_reply_message()
@@ -159,7 +159,7 @@ async def setgb(event):
         await eor(x, get_string("grt_7"), time=5)
 
 
-@ultroid_cmd(pattern="cleargoodbye$", groups_only=True)
+@ultroid_cmd(pattern="cleargoodbye$", category="Admin", groups_only=True)
 async def clearwgb(event):
     if not get_goodbye(event.chat_id):
         return await event.eor(get_string("grt_6"), time=5)
@@ -167,7 +167,7 @@ async def clearwgb(event):
     await event.eor("`Goodbye Note Deleted`", time=5)
 
 
-@ultroid_cmd(pattern="getgoodbye$", groups_only=True)
+@ultroid_cmd(pattern="getgoodbye$", category="Admin", groups_only=True)
 async def listgd(event):
     wel = get_goodbye(event.chat_id)
     if not wel:
@@ -181,7 +181,7 @@ async def listgd(event):
     await event.delete()
 
 
-@ultroid_cmd(pattern="thankmembers (on|off)", groups_only=True)
+@ultroid_cmd(pattern="thankmembers (on|off)", category="Admin", groups_only=True)
 async def thank_set(event):
     type_ = event.pattern_match.group(1).strip()
     if not type_ or type_ == "":

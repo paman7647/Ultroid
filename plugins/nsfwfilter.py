@@ -28,7 +28,7 @@ from pyUltroid.dB.nsfw_db import is_nsfw, nsfw_chat, rem_nsfw
 from . import HNDLR, async_searcher, eor, events, udB, ultroid_bot, ultroid_cmd
 
 
-@ultroid_cmd(pattern="addnsfw( (.*)|$)", admins_only=True)
+@ultroid_cmd(pattern="addnsfw( (.*)|$)", category="Admin", admins_only=True)
 async def addnsfw(e):
     if not udB.get_key("DEEP_API"):
         return await eor(
@@ -42,7 +42,7 @@ async def addnsfw(e):
     await e.eor("Added This Chat To Nsfw Filter")
 
 
-@ultroid_cmd(pattern="remnsfw", admins_only=True)
+@ultroid_cmd(pattern="remnsfw", category="Admin", admins_only=True)
 async def remnsfw(e):
     rem_nsfw(e.chat_id)
     await e.eor("Removed This Chat from Nsfw Filter.")

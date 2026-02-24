@@ -69,7 +69,7 @@ async def get_air_pollution_data(latitude, longitude, api_key):
                 return None
 
 
-@ultroid_cmd(pattern="weather ?(.*)")
+@ultroid_cmd(pattern="weather ?(.*)", category="Tools")
 async def weather(event):
     if event.fwd_from:
         return
@@ -119,7 +119,7 @@ async def weather(event):
         await event.eor(f"An unexpected error occurred: {str(e)}", time=5)
 
 
-@ultroid_cmd(pattern="air ?(.*)")
+@ultroid_cmd(pattern="air ?(.*)", category="Tools")
 async def air_pollution(event):
     if event.fwd_from:
         return

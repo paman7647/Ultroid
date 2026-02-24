@@ -31,7 +31,7 @@ from datetime import datetime as dt
 from . import HNDLR, LOGS, bash, downloader, get_string, mediainfo, ultroid_cmd
 
 
-@ultroid_cmd(pattern="(bw|invert)gif$")
+@ultroid_cmd(pattern="(bw|invert)gif$", category="Media")
 async def igif(e):
     match = e.pattern_match.group(1).strip()
     a = await e.get_reply_message()
@@ -56,7 +56,7 @@ async def igif(e):
         LOGS.info(er)
 
 
-@ultroid_cmd(pattern="rvgif$")
+@ultroid_cmd(pattern="rvgif$", category="Media")
 async def reverse_gif(event):
     a = await event.get_reply_message()
     if not (a and a.media) and "video" not in mediainfo(a.media):
@@ -70,7 +70,7 @@ async def reverse_gif(event):
     os.remove("reversed.mp4")
 
 
-@ultroid_cmd(pattern="gif( (.*)|$)")
+@ultroid_cmd(pattern="gif( (.*)|$)", category="Media")
 async def gifs(ult):
     get = ult.pattern_match.group(1).strip()
     xx = random.randint(0, 5)
@@ -96,7 +96,7 @@ async def gifs(ult):
     await m.delete()
 
 
-@ultroid_cmd(pattern="vtog$")
+@ultroid_cmd(pattern="vtog$", category="Media")
 async def vtogif(e):
     a = await e.get_reply_message()
     if not (a and a.media):

@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 # https://bugs.python.org/issue26789
 # 'open' not defined has been fixed in Python3.10

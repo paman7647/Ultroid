@@ -41,7 +41,7 @@ fn = functions
 
 
 @ultroid_cmd(
-    pattern="sysinfo$",
+    pattern="sysinfo$", category="Tools",
 )
 async def _(e):
     xx = await e.eor(get_string("com_1"))
@@ -59,7 +59,7 @@ async def _(e):
     remove("neo.txt")
 
 
-@ultroid_cmd(pattern="bash", fullsudo=True, only_devs=True)
+@ultroid_cmd(pattern="bash", category="Tools", fullsudo=True, only_devs=True)
 async def _(event):
     carb, rayso, yamlf = None, None, False
     try:
@@ -194,7 +194,7 @@ def _parse_eval(value=None):
     return str(value)
 
 
-@ultroid_cmd(pattern="eval", fullsudo=True, only_devs=True)
+@ultroid_cmd(pattern="eval", category="Tools", fullsudo=True, only_devs=True)
 async def _(event):
     try:
         cmd = event.text.split(maxsplit=1)[1]
@@ -361,7 +361,7 @@ int main(){
 """
 
 
-@ultroid_cmd(pattern="cpp", only_devs=True)
+@ultroid_cmd(pattern="cpp", category="Tools", only_devs=True)
 async def doie(e):
     match = e.text.split(" ", maxsplit=1)
     try:

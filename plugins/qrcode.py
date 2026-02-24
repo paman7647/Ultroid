@@ -32,7 +32,7 @@ from telethon.tl.types import MessageMediaDocument as doc
 from . import check_filename, get_string, ultroid_bot, ultroid_cmd
 
 
-@ultroid_cmd(pattern="qrcode( (.*)|$)")
+@ultroid_cmd(pattern="qrcode( (.*)|$)", category="Tools")
 async def cd(e):
     reply = await e.get_reply_message()
     msg = e.pattern_match.group(1).strip()
@@ -65,7 +65,7 @@ async def cd(e):
         os.remove(cimg)
 
 
-@ultroid_cmd(pattern="addqr( (.*)|$)")
+@ultroid_cmd(pattern="addqr( (.*)|$)", category="Tools")
 async def qrwater(e):
     msg = e.pattern_match.group(1).strip()
     r = await e.get_reply_message()
@@ -88,7 +88,7 @@ async def qrwater(e):
     os.remove(dl)
 
 
-@ultroid_cmd(pattern="qrdecode$")
+@ultroid_cmd(pattern="qrdecode$", category="Tools")
 async def decod(e):
     r = await e.get_reply_message()
     if not (r and r.media):

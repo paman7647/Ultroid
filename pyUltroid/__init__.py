@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import os
 import sys
@@ -38,6 +38,13 @@ if run_as_module:
     start_time = time.time()
     _ult_cache = {}
     _ignore_eval = []
+
+    import asyncio
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
     udB = UltroidDB()
     update_envs()
@@ -98,8 +105,10 @@ if run_as_module:
     HNDLR = udB.get_key("HNDLR") or "."
     DUAL_HNDLR = udB.get_key("DUAL_HNDLR") or "/"
     SUDO_HNDLR = udB.get_key("SUDO_HNDLR") or HNDLR
+
+    from ._misc import owner_and_sudos
 else:
-    print("pyUltroid 2022 © TeamUltroid")
+    print("pyUltroid 2022 © TeamUltroid | Maintained by paman7647")
 
     from logging import getLogger
 

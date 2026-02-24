@@ -17,23 +17,38 @@ from pyUltroid.fns.tools import cmd_regex_replace
 
 from . import HNDLR, LOGS, OWNER_NAME, asst, get_string, inline_pic, udB, ultroid_cmd
 
-_main_help_menu = [
-    [
-        Button.inline(get_string("help_4"), data="uh_Official_"),
-        Button.inline(get_string("help_5"), data="uh_Addons_"),
-    ],
-    [
+def get_main_menu():
+    # Only show categories that have plugins loaded
+    cats = [c for c in HELP.keys() if HELP.get(c)]
+    
+    if udB.get_key("DISABLE_AST_PLUGINS"):
+        if "Owner 👑" in cats:
+            cats.remove("Owner 👑")
+            
+    if udB.get_key("ADDONS") is False:
+        if "Addons 🧩" in cats:
+             cats.remove("Addons 🧩")
+             
+    buttons = []
+    
+    # 2 buttons per row
+    for i in range(0, len(cats), 2):
+        row = [Button.inline(f"• {c} •", data=f"uh_{c}_") for c in cats[i:i+2]]
+        buttons.append(row)
+        
+    buttons.append([
         Button.inline(get_string("help_6"), data="uh_VCBot_"),
         Button.inline(get_string("help_7"), data="inlone"),
-    ],
-    [
+    ])
+    
+    buttons.append([
         Button.inline(get_string("help_8"), data="ownr"),
         Button.url(
             get_string("help_9"), url=f"https://t.me/{asst.me.username}?start=set"
         ),
-    ],
-    [Button.inline(get_string("help_10"), data="close")],
-]
+    ])
+    buttons.append([Button.inline(get_string("help_10"), data="close")])
+    return buttons
 
 
 @ultroid_cmd(pattern="help( (.*)|$)")
@@ -42,15 +57,15 @@ async def _help(ult):
     chat = await ult.get_chat()
     if plug:
         try:
-            if plug in HELP["Official"]:
+            found_cat = None
+            for cat in HELP.keys():
+                if HELP.get(cat) and plug in HELP[cat]:
+                    found_cat = cat
+                    break
+            
+            if found_cat:
                 output = f"**Plugin** - `{plug}`\n"
-                for i in HELP["Official"][plug]:
-                    output += i
-                output += "\n© @TeamUltroid"
-                await ult.eor(output)
-            elif HELP.get("Addons") and plug in HELP["Addons"]:
-                output = f"**Plugin** - `{plug}`\n"
-                for i in HELP["Addons"][plug]:
+                for i in HELP[found_cat][plug]:
                     output += i
                 output += "\n© @TeamUltroid"
                 await ult.eor(output)
@@ -92,11 +107,15 @@ async def _help(ult):
                             text += f"\nDid you mean `{best_match}`?"
                         return await ult.eor(text)
                     output = f"**Command** `{plug}` **found in plugin** - `{file}`\n"
-                    if file in HELP["Official"]:
-                        for i in HELP["Official"][file]:
-                            output += i
-                    elif HELP.get("Addons") and file in HELP["Addons"]:
-                        for i in HELP["Addons"][file]:
+                    
+                    found_file_cat = None
+                    for cat in HELP.keys():
+                        if HELP.get(cat) and file in HELP[cat]:
+                            found_file_cat = cat
+                            break
+                            
+                    if found_file_cat:
+                        for i in HELP[found_file_cat][file]:
                             output += i
                     elif HELP.get("VCBot") and file in HELP["VCBot"]:
                         for i in HELP["VCBot"][file]:
@@ -114,17 +133,19 @@ async def _help(ult):
             for x in LIST.values():
                 z.extend(x)
             cmd = len(z) + 10
+            cmd = len(z) + 10
+            menus = get_main_menu()
             if udB.get_key("MANAGER") and udB.get_key("DUAL_HNDLR") == "/":
-                _main_help_menu[2:3] = [[Button.inline("• Manager Help •", "mngbtn")]]
+                menus[2:3] = [[Button.inline("• Manager Help •", "mngbtn")]]
             return await ult.reply(
                 get_string("inline_4").format(
                     OWNER_NAME,
-                    len(HELP["Official"]),
+                    sum(len(v) for v in HELP.values() if isinstance(v, dict)),
                     len(HELP["Addons"] if "Addons" in HELP else []),
                     cmd,
                 ),
                 file=inline_pic(),
-                buttons=_main_help_menu,
+                buttons=menus,
             )
         except BotResponseTimeoutError:
             return await ult.eor(

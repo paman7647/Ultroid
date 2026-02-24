@@ -29,6 +29,8 @@ from pyUltroid.fns.tools import (
 
 from . import *
 from . import _ult_cache
+from deep_translator import GoogleTranslator
+from google import genai
 
 SUP_BUTTONS = [
     [
@@ -621,3 +623,54 @@ InlinePlugin.update(
         "Tʟ Sᴇᴀʀᴄʜ": "tl",
     }
 )
+
+
+@in_pattern("tr (.*)", owner=True)
+async def inline_tr(e):
+    match = e.pattern_match.group(1).strip()
+    if not match:
+        return await e.answer([], switch_pm="TR: <lang> <text>", switch_pm_param="start")
+    
+    parts = match.split(" ", 1)
+    lang = "en"
+    text = match
+    if len(parts) > 1 and len(parts[0]) == 2:
+        lang, text = parts[0], parts[1]
+        
+    try:
+        res = GoogleTranslator(source='auto', target=lang).translate(text)
+        kk = [await e.builder.article(title=f"Translate to {lang}", text=f"**TR ({lang}):**\n`{res}`")]
+        await e.answer(kk)
+    except Exception:
+        await e.answer([])
+
+
+@in_pattern("ai (.*)", owner=True)
+async def inline_ai(e):
+    prompt = e.pattern_match.group(1).strip()
+    if not prompt:
+        return await e.answer([], switch_pm="AI: <prompt>", switch_pm_param="start")
+    
+    api_key = udB.get_key("GEMINI_API_KEY")
+    if not api_key:
+        return await e.answer([], switch_pm="Set GEMINI_API_KEY first!", switch_pm_param="start")
+
+    try:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+        res = response.text
+        kk = [await e.builder.article(title="AI Response", description=res[:100], text=f"🤖 **AI:**\n\n{res}")]
+        await e.answer(kk)
+    except Exception:
+        await e.answer([])
+
+
+@in_pattern("paste (.*)", owner=True)
+async def inline_paste(e):
+    text = e.pattern_match.group(1).strip()
+    if not text:
+        return await e.answer([], switch_pm="Paste: <text>", switch_pm_param="start")
+    
+    # We can't easily upload from inline without a file, so we'll just show it
+    kk = [await e.builder.article(title="Click to Paste", text=f"```\n{text}\n```")]
+    await e.answer(kk)

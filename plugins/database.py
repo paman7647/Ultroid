@@ -16,7 +16,7 @@ import re
 from . import Redis, eor, get_string, udB, ultroid_cmd
 
 
-@ultroid_cmd(pattern="setdb( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="setdb( (.*)|$)", category="Tools", fullsudo=True)
 async def _(ult):
     match = ult.pattern_match.group(1).strip()
     if not match:
@@ -36,7 +36,7 @@ async def _(ult):
         await ult.eor(get_string("com_7"))
 
 
-@ultroid_cmd(pattern="deldb( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="deldb( (.*)|$)", category="Tools", fullsudo=True)
 async def _(ult):
     key = ult.pattern_match.group(1).strip()
     if not key:
@@ -56,7 +56,7 @@ async def _(ult):
         await ult.eor(get_string("com_7"))
 
 
-@ultroid_cmd(pattern="rendb( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="rendb( (.*)|$)", category="Tools", fullsudo=True)
 async def _(ult):
     match = ult.pattern_match.group(1).strip()
     if not match:

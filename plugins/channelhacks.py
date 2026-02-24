@@ -44,7 +44,7 @@ async def autopost_func(e):
                 await asst.send_message(udB.get_key("LOG_CHANNEL"), Error)
 
 
-@ultroid_cmd(pattern="shift (.*)")
+@ultroid_cmd(pattern="shift (.*)", category="Admin")
 async def _(e):
     x = e.pattern_match.group(1).strip()
     z = await e.eor(get_string("com_1"))
@@ -72,7 +72,7 @@ async def _(e):
     await z.edit("Done")
 
 
-@ultroid_cmd(pattern="asource (.*)")
+@ultroid_cmd(pattern="asource (.*)", category="Admin")
 async def source(e):
     if x := e.pattern_match.group(1).strip():
         try:
@@ -90,7 +90,7 @@ async def source(e):
         await e.eor(get_string("cha_3"))
 
 
-@ultroid_cmd(pattern="dsource( (.*)|$)")
+@ultroid_cmd(pattern="dsource( (.*)|$)", category="Admin")
 async def dd(event):
     chat_id = event.pattern_match.group(1).strip()
     x = await event.eor(get_string("com_1"))
@@ -114,7 +114,7 @@ async def dd(event):
         await eor(x, "Source channel is already removed from database. ", time=3)
 
 
-@ultroid_cmd(pattern="listsource")
+@ultroid_cmd(pattern="listsource", category="Admin")
 async def list_all(event):
     x = await event.eor(get_string("com_1"))
     num = SourceM.count()
@@ -145,7 +145,7 @@ async def list_all(event):
         await x.edit(msg)
 
 
-@ultroid_cmd(pattern="adest (.*)")
+@ultroid_cmd(pattern="adest (.*)", category="Admin")
 async def destination(e):
     if x := e.pattern_match.group(1).strip():
         try:
@@ -162,7 +162,7 @@ async def destination(e):
         await e.eor("Destination channel already added")
 
 
-@ultroid_cmd(pattern="ddest( (.*)|$)")
+@ultroid_cmd(pattern="ddest( (.*)|$)", category="Admin")
 async def dd(event):
     chat_id = event.pattern_match.group(1).strip()
     x = await event.eor(get_string("com_1"))
@@ -186,7 +186,7 @@ async def dd(event):
         await eor(x, "Destination channel is already removed from database. ", time=5)
 
 
-@ultroid_cmd(pattern="listdest")
+@ultroid_cmd(pattern="listdest", category="Admin")
 async def list_all(event):
     ultroid_bot = event.client
     x = await event.eor(get_string("com_1"))

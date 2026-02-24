@@ -32,7 +32,7 @@ from . import (
 __doc__ = get_help("help_audiotools")
 
 
-@ultroid_cmd(pattern="makevoice$")
+@ultroid_cmd(pattern="makevoice$", category="Media")
 async def vnc(e):
     if not e.reply_to:
         return await eod(e, get_string("audiotools_1"))
@@ -59,7 +59,7 @@ async def vnc(e):
     os.remove("out.opus")
 
 
-@ultroid_cmd(pattern="atrim( (.*)|$)")
+@ultroid_cmd(pattern="atrim( (.*)|$)", category="Media")
 async def trim_aud(e):
     sec = e.pattern_match.group(1).strip()
     if not sec or "-" not in sec:
@@ -123,7 +123,7 @@ async def trim_aud(e):
         await e.eor(get_string("audiotools_1"), time=5)
 
 
-@ultroid_cmd(pattern="extractaudio$")
+@ultroid_cmd(pattern="extractaudio$", category="Media")
 async def ex_aud(e):
     reply = await e.get_reply_message()
     if not (reply and reply.media and mediainfo(reply.media).startswith("video")):

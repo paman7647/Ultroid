@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 from . import *
 
@@ -100,6 +100,37 @@ def main():
 
 
 if __name__ == "__main__":
+    import signal
+
+    async def _graceful_shutdown():
+        """Disconnect all clients cleanly to prevent SQLite WAL locks."""
+        LOGS.info("Graceful shutdown initiated...")
+        try:
+            if ultroid_bot and ultroid_bot.is_connected():
+                await ultroid_bot.disconnect()
+            if asst and asst != ultroid_bot and asst.is_connected():
+                await asst.disconnect()
+        except Exception as e:
+            LOGS.warning(f"Shutdown warning: {e}")
+        LOGS.info("All clients disconnected. Goodbye!")
+
+    def _shutdown_handler(sig, frame):
+        import asyncio
+        try:
+            loop = asyncio.get_running_loop()
+            loop.create_task(_graceful_shutdown())
+            loop.call_later(2, loop.stop)
+        except RuntimeError:
+            # No running loop — run synchronously
+            try:
+                asyncio.run(_graceful_shutdown())
+            except Exception:
+                pass
+            sys.exit(0)
+
+    signal.signal(signal.SIGTERM, _shutdown_handler)
+    signal.signal(signal.SIGINT, _shutdown_handler)
+
     main()
 
     asst.run()

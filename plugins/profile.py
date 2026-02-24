@@ -37,7 +37,7 @@ TMP_DOWNLOAD_DIRECTORY = "resources/downloads/"
 # bio changer
 
 
-@ultroid_cmd(pattern="setbio( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="setbio( (.*)|$)", category="Tools", fullsudo=True)
 async def _(ult):
     ok = await ult.eor("...")
     set = ult.pattern_match.group(1).strip()
@@ -51,7 +51,7 @@ async def _(ult):
 # name changer
 
 
-@ultroid_cmd(pattern="setname ?((.|//)*)", fullsudo=True)
+@ultroid_cmd(pattern="setname ?((.|//)*)", category="Tools", fullsudo=True)
 async def _(ult):
     ok = await ult.eor("...")
     names = first_name = ult.pattern_match.group(1).strip()
@@ -73,7 +73,7 @@ async def _(ult):
 # profile pic
 
 
-@ultroid_cmd(pattern="setpic$", fullsudo=True)
+@ultroid_cmd(pattern="setpic$", category="Tools", fullsudo=True)
 async def _(ult):
     if not ult.is_reply:
         return await ult.eor("`Reply to a Media..`", time=5)
@@ -95,7 +95,7 @@ async def _(ult):
 # delete profile pic(s)
 
 
-@ultroid_cmd(pattern="delpfp( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="delpfp( (.*)|$)", category="Tools", fullsudo=True)
 async def remove_profilepic(delpfp):
     ok = await eor(delpfp, "`...`")
     group = delpfp.text[8:]
@@ -110,7 +110,7 @@ async def remove_profilepic(delpfp):
     await eod(ok, f"`Successfully deleted {len(pfplist)} profile picture(s).`")
 
 
-@ultroid_cmd(pattern="poto( (.*)|$)")
+@ultroid_cmd(pattern="poto( (.*)|$)", category="Tools")
 async def gpoto(e):
     ult = e.pattern_match.group(1).strip()
 

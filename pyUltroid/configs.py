@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import sys
 
@@ -53,3 +53,8 @@ class Var:
     DATABASE_URL = config("DATABASE_URL", default=None)
     # for MONGODB users
     MONGO_URI = config("MONGO_URI", default=None)
+    # AI Integration
+    GEMINI_API_KEY = config("GEMINI_API_KEY", default=None)
+    # API Keys for plugins
+    REMOVE_BG_API = config("REMOVE_BG_API", default=None)
+    VT_API_KEY = config("VT_API_KEY", default=None)

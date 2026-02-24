@@ -51,7 +51,7 @@ from . import (
 CACHE = {}
 
 
-@ultroid_cmd(pattern="fsub( (.*)|$)", admins_only=True, groups_only=True)
+@ultroid_cmd(pattern="fsub( (.*)|$)", category="Admin", admins_only=True, groups_only=True)
 async def addfor(e):
     match = e.pattern_match.group(1).strip()
     if not match:
@@ -65,7 +65,7 @@ async def addfor(e):
     ultroid_bot.add_handler(force_sub, events.NewMessage(incoming=True))
 
 
-@ultroid_cmd(pattern="remfsub$")
+@ultroid_cmd(pattern="remfsub$", category="Admin")
 async def remor(e):
     res = rem_forcesub(e.chat_id)
     if not res:
@@ -73,7 +73,7 @@ async def remor(e):
     await e.eor("Removed ForceSub...")
 
 
-@ultroid_cmd(pattern="checkfsub$")
+@ultroid_cmd(pattern="checkfsub$", category="Admin")
 async def getfsr(e):
     res = get_forcesetting(e.chat_id)
     if not res:

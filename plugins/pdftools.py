@@ -58,7 +58,7 @@ if not os.path.isdir("pdf"):
     os.mkdir("pdf")
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Tools", 
     pattern="pdf( (.*)|$)",
 )
 async def pdfseimg(event):
@@ -121,7 +121,7 @@ async def pdfseimg(event):
 
 
 @ultroid_cmd(
-    pattern="pdtext( (.*)|$)",
+    pattern="pdtext( (.*)|$)", category="Tools",
 )
 async def pdfsetxt(event):
     ok = await event.get_reply_message()
@@ -177,7 +177,7 @@ async def pdfsetxt(event):
 
 
 @ultroid_cmd(
-    pattern="pdscan( (.*)|$)",
+    pattern="pdscan( (.*)|$)", category="Tools",
 )
 async def imgscan(event):
     ok = await event.get_reply_message()
@@ -247,7 +247,7 @@ async def imgscan(event):
 
 
 @ultroid_cmd(
-    pattern="pdsave( (.*)|$)",
+    pattern="pdsave( (.*)|$)", category="Tools",
 )
 async def savepdf(event):
     ok = await event.get_reply_message()
@@ -327,7 +327,7 @@ async def savepdf(event):
 
 
 @ultroid_cmd(
-    pattern="pdsend( (.*)|$)",
+    pattern="pdsend( (.*)|$)", category="Tools",
 )
 async def sendpdf(event):
     if not os.path.exists("pdf/scan.pdf"):

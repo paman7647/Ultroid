@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import os
 import subprocess
@@ -32,15 +32,17 @@ def _after_load(loader, module, plugin_name=""):
             loader._logger.exception(er)
             loader._logger.info(f"Error in {plugin_name}: {module}")
             return
-        if loader.key in HELP.keys():
-            update_cmd = HELP[loader.key]
+        from ..dB._core import get_category
+        cat = get_category(plugin_name)
+        if cat in HELP.keys():
+            update_cmd = HELP[cat]
             try:
                 update_cmd.update({plugin_name: doc})
             except BaseException as er:
                 loader._logger.exception(er)
         else:
             try:
-                HELP.update({loader.key: {plugin_name: doc}})
+                HELP.update({cat: {plugin_name: doc}})
             except BaseException as em:
                 loader._logger.exception(em)
 

@@ -68,7 +68,7 @@ from . import (
 )
 
 
-@ultroid_cmd(pattern="packkang")
+@ultroid_cmd(pattern="packkang", category="Media")
 async def pack_kangish(_):
     _e = await _.get_reply_message()
     local = None
@@ -147,7 +147,7 @@ async def pack_kangish(_):
 
 
 @ultroid_cmd(
-    pattern="kang",
+    pattern="kang", category="Media",
 )
 async def hehe(args):
     ultroid_bot = args.client
@@ -379,7 +379,7 @@ async def hehe(args):
 
 
 @ultroid_cmd(
-    pattern="round$",
+    pattern="round$", category="Media",
 )
 async def ultdround(event):
     ureply = await event.get_reply_message()
@@ -416,7 +416,7 @@ async def ultdround(event):
 
 
 @ultroid_cmd(
-    pattern="destroy$",
+    pattern="destroy$", category="Media",
 )
 async def ultdestroy(event):
     ult = await event.get_reply_message()
@@ -456,7 +456,7 @@ async def ultdestroy(event):
 
 
 @ultroid_cmd(
-    pattern="tiny$",
+    pattern="tiny$", category="Media",
 )
 async def ultiny(event):
     reply = await event.get_reply_message()

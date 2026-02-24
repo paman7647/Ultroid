@@ -27,7 +27,7 @@ from pyUltroid.fns.tools import async_searcher
 from . import get_string, ultroid_cmd
 
 
-@ultroid_cmd(pattern="meaning( (.*)|$)", manager=True)
+@ultroid_cmd(pattern="meaning( (.*)|$)", category="Tools", manager=True)
 async def mean(event):
     wrd = event.pattern_match.group(1).strip()
     if not wrd:
@@ -65,7 +65,7 @@ async def mean(event):
 
 
 @ultroid_cmd(
-    pattern="(syno|anto)nym",
+    pattern="(syno|anto)nym", category="Tools",
 )
 async def mean(event):
     task = event.pattern_match.group(1) + "nyms"
@@ -98,7 +98,7 @@ async def mean(event):
         )
 
 
-@ultroid_cmd(pattern="ud (.*)")
+@ultroid_cmd(pattern="ud (.*)", category="Tools")
 async def _(event):
     word = event.pattern_match.group(1).strip()
     if not word:

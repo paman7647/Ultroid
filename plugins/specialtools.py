@@ -63,7 +63,7 @@ File = []
 scraper = create_scraper()
 
 @ultroid_cmd(
-    pattern="getaudio$",
+    pattern="getaudio$", category="Tools",
 )
 async def daudtoid(e):
     if not e.reply_to:
@@ -87,7 +87,7 @@ async def daudtoid(e):
 
 
 @ultroid_cmd(
-    pattern="addaudio$",
+    pattern="addaudio$", category="Tools",
 )
 async def adaudroid(e):
     if not e.reply_to:
@@ -139,7 +139,7 @@ async def adaudroid(e):
 
 
 @ultroid_cmd(
-    pattern=r"dob( (.*)|$)",
+    pattern=r"dob( (.*)|$)", category="Tools",
 )
 async def hbd(event):
     match = event.pattern_match.group(1).strip()
@@ -253,7 +253,7 @@ Zodiac -: {sign}
 
 session = Session()
 
-@ultroid_cmd(pattern="sticker( (.*)|$)")
+@ultroid_cmd(pattern="sticker( (.*)|$)", category="Tools")
 async def _(event):
     x = event.pattern_match.group(1).strip()
     if not x:
@@ -315,7 +315,7 @@ async def _(event):
     except Exception as e:
         await uu.edit(f"`Error: {str(e)}`\nTry again later.")
 
-@ultroid_cmd(pattern="wall( (.*)|$)")
+@ultroid_cmd(pattern="wall( (.*)|$)", category="Tools")
 async def wall(event):
     inp = event.pattern_match.group(1).strip()
     if not inp:
@@ -328,7 +328,7 @@ async def wall(event):
     await nn.delete()
 
 
-@ultroid_cmd(pattern="q( (.*)|$)", manager=True, allow_pm=True)
+@ultroid_cmd(pattern="q( (.*)|$)", category="Tools", manager=True, allow_pm=True)
 async def quott_(event):
     match = event.pattern_match.group(1).strip()
     if not event.is_reply:

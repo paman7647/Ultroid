@@ -25,7 +25,7 @@ import os
 from . import eor, get_string, udB, ultroid_cmd, HNDLR
 
 
-@ultroid_cmd(pattern="get($| (.*))", fullsudo=True)
+@ultroid_cmd(pattern="get($| (.*))", category="Owner", fullsudo=True)
 async def get_var(event):
     try:
         opt = event.text.split(maxsplit=2)[1]

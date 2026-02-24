@@ -17,7 +17,7 @@ from pyUltroid.fns.admins import ban_time
 from . import asyncio, get_string, ultroid_cmd
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Fun", 
     pattern="f(typing|audio|contact|document|game|location|sticker|photo|round|video)( (.*)|$)"
 )
 async def _(e):

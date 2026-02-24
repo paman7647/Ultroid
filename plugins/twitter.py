@@ -55,7 +55,7 @@ async def get_client():
 
 
 
-@ultroid_cmd(pattern="tw( (.*)|$)")
+@ultroid_cmd(pattern="tw( (.*)|$)", category="Social")
 async def tweet_cmd(event):
     """Post a tweet"""
     text = event.pattern_match.group(1).strip()
@@ -71,7 +71,7 @@ async def tweet_cmd(event):
         await msg.edit(f"❌ **Error:**\n`{str(e)}`")
 
 
-@ultroid_cmd(pattern="twdetail( (.*)|$)")
+@ultroid_cmd(pattern="twdetail( (.*)|$)", category="Social")
 async def twitter_details(event):
     """Get tweet details"""
     match = event.pattern_match.group(1).strip()
@@ -102,7 +102,7 @@ async def twitter_details(event):
         await msg.edit(f"❌ **Error:**\n`{str(e)}`")
 
 
-@ultroid_cmd(pattern="twuser( (.*)|$)")
+@ultroid_cmd(pattern="twuser( (.*)|$)", category="Social")
 async def twitter_user(event):
     """Get user details"""
     match = event.pattern_match.group(1).strip()
@@ -139,7 +139,7 @@ async def twitter_user(event):
         await msg.edit(f"❌ **Error:**\n`{str(e)}`")
 
 
-@ultroid_cmd(pattern="twl( (.*)|$)")
+@ultroid_cmd(pattern="twl( (.*)|$)", category="Social")
 async def twitter_media(event):
     """Download tweet media"""
     match = event.pattern_match.group(1).strip()

@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import inspect
 import re
@@ -62,6 +62,7 @@ def asst_cmd(pattern=None, load=None, owner=False, **kwargs):
         asst.add_event_handler(handler, NewMessage(**kwargs))
         if load is not None:
             append_or_update(load, func, name, kwargs)
+        return func
 
     return ult
 
@@ -86,6 +87,7 @@ def callback(data=None, from_users=[], admins=False, owner=False, **kwargs):
                 LOGS.exception(er)
 
         asst.add_event_handler(wrapper, CallbackQuery(data=data, **kwargs))
+        return func
 
     return ultr
 
@@ -146,5 +148,6 @@ def in_pattern(pattern=None, owner=False, **kwargs):
                     await asst.send_message(udB.get_key("LOG_CHANNEL"), error_text())
 
         asst.add_event_handler(wrapper, InlineQuery(pattern=pattern, **kwargs))
+        return func
 
     return don

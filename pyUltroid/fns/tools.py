@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import json
 import math
@@ -120,8 +120,11 @@ async def metadata(file):
         )
     
     data = {}
-    _info = json.loads(out)["media"]
-    if not _info:
+    try:
+        _info = json.loads(out)["media"]
+        if not _info:
+            return {}
+    except (json.decoder.JSONDecodeError, KeyError):
         return {}
     _info = _info["track"]
     info = _info[0]

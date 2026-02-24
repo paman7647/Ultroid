@@ -18,13 +18,13 @@ from pyUltroid.startup.loader import load_addons
 from . import LOGS, async_searcher, eod, get_string, safeinstall, ultroid_cmd, un_plug
 
 
-@ultroid_cmd(pattern="install", fullsudo=True)
+@ultroid_cmd(pattern="install", category="Owner", fullsudo=True)
 async def install(event):
     await safeinstall(event)
 
 
 @ultroid_cmd(
-    pattern=r"unload( (.*)|$)",
+    pattern=r"unload( (.*)|$)", category="Owner",
 )
 async def unload(event):
     shortname = event.pattern_match.group(1).strip()
@@ -47,7 +47,7 @@ async def unload(event):
 
 
 @ultroid_cmd(
-    pattern=r"uninstall( (.*)|$)",
+    pattern=r"uninstall( (.*)|$)", category="Owner",
 )
 async def uninstall(event):
     shortname = event.pattern_match.group(1).strip()
@@ -70,7 +70,7 @@ async def uninstall(event):
 
 
 @ultroid_cmd(
-    pattern=r"load( (.*)|$)",
+    pattern=r"load( (.*)|$)", category="Owner",
     fullsudo=True,
 )
 async def load(event):
@@ -94,7 +94,7 @@ async def load(event):
         )
 
 
-@ultroid_cmd(pattern="getaddons( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="getaddons( (.*)|$)", category="Owner", fullsudo=True)
 async def get_the_addons_lol(event):
     thelink = event.pattern_match.group(1).strip()
     xx = await event.eor(get_string("com_1"))

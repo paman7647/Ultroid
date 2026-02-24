@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import asyncio
 import os
@@ -463,9 +463,11 @@ async def ready():
             await (await ultroid_bot.send_message(chat_id, str(e))).delete()
             spam_sent = await asst.send_message(chat_id, MSG, file=PHOTO, buttons=BTTS)
         except Exception as g:
-            LOGS.info(g)
+            if "event loop" not in str(g).lower():
+                LOGS.info(g)
     except Exception as el:
-        LOGS.info(el)
+        if "event loop" not in str(el).lower():
+            LOGS.info(el)
         try:
             spam_sent = await ultroid_bot.send_message(chat_id, MSG)
         except Exception as ef:

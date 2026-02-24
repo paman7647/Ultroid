@@ -78,7 +78,7 @@ from . import humanbytes as hb
 from . import inline_mention, is_url_ok, json_parser, mediainfo, ultroid_cmd
 
 
-@ultroid_cmd(pattern="tr( (.*)|$)", manager=True)
+@ultroid_cmd(pattern="tr( (.*)|$)", category="Tools", manager=True)
 async def _(event):
     input = event.pattern_match.group(1).strip().split(maxsplit=1)
     txt = input[1] if len(input) > 1 else None
@@ -104,7 +104,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="id( (.*)|$)",
+    pattern="id( (.*)|$)", category="Tools",
     manager=True,
 )
 async def _(event):
@@ -129,7 +129,7 @@ async def _(event):
     await ult.eor(data)
 
 
-@ultroid_cmd(pattern="bots( (.*)|$)", groups_only=True, manager=True)
+@ultroid_cmd(pattern="bots( (.*)|$)", category="Tools", groups_only=True, manager=True)
 async def _(ult):
     mentions = "• **Bots in this Chat**: \n"
     if input_str := ult.pattern_match.group(1).strip():
@@ -155,7 +155,7 @@ async def _(ult):
 
 
 @ultroid_cmd(
-    pattern="hl( (.*)|$)",
+    pattern="hl( (.*)|$)", category="Tools",
 )
 async def _(ult):
     input_ = ult.pattern_match.group(1).strip()
@@ -172,7 +172,7 @@ async def _(ult):
 
 
 @ultroid_cmd(
-    pattern="circle$",
+    pattern="circle$", category="Tools",
 )
 async def _(e):
     reply = await e.get_reply_message()
@@ -252,7 +252,7 @@ FilesEMOJI = {
 
 
 @ultroid_cmd(
-    pattern="ls( (.*)|$)",
+    pattern="ls( (.*)|$)", category="Tools",
 )
 async def _(e):
     files = e.pattern_match.group(1).strip()
@@ -349,7 +349,7 @@ def mentionuser(name, userid):
 
 
 @ultroid_cmd(
-    pattern="sg(|u)(?:\\s|$)([\\s\\S]*)",
+    pattern="sg(|u)(?:\\s|$)([\\s\\S]*)", category="Tools",
     fullsudo=True,
 )
 async def sangmata(event):
@@ -414,7 +414,7 @@ async def sangmata(event):
     await event.edit(output)
 
 
-@ultroid_cmd(pattern="webshot( (.*)|$)")
+@ultroid_cmd(pattern="webshot( (.*)|$)", category="Tools")
 async def webss(event):
     xx = await event.eor(get_string("com_1"))
     xurl = event.pattern_match.group(1).strip()

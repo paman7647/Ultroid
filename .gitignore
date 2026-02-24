@@ -45,3 +45,6 @@ bin-release/
 
 # fly.io configs
 fly.toml
+downloads/
+Downloads/
+

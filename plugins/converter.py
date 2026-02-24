@@ -42,7 +42,7 @@ from . import (
 opn = []
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Tools", 
     pattern="thumbnail$",
 )
 async def _(e):
@@ -61,7 +61,7 @@ async def _(e):
 
 
 @ultroid_cmd(
-    pattern="rename( (.*)|$)",
+    pattern="rename( (.*)|$)", category="Tools",
 )
 async def imak(event):
     reply = await event.get_reply_message()
@@ -118,7 +118,7 @@ conv_keys = {
 
 
 @ultroid_cmd(
-    pattern="convert( (.*)|$)",
+    pattern="convert( (.*)|$)", category="Tools",
 )
 async def uconverter(event):
     xx = await event.eor(get_string("com_1"))
@@ -149,7 +149,7 @@ async def uconverter(event):
     await xx.delete()
 
 @ultroid_cmd(
-    pattern="doc( (.*)|$)",
+    pattern="doc( (.*)|$)", category="Tools",
 )
 async def _(event):
     input_str = event.pattern_match.group(1).strip()
@@ -168,7 +168,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="open( (.*)|$)",
+    pattern="open( (.*)|$)", category="Tools",
 )
 async def _(event):
     a = await event.get_reply_message()

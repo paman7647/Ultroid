@@ -32,7 +32,7 @@ async def dnd_func(event):
     await event.delete()
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Admin", 
     pattern="autokick (on|off)$",
     admins_only=True,
     manager=True,

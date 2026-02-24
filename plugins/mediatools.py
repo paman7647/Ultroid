@@ -40,7 +40,7 @@ except ImportError:
     cv2 = None
 
 
-@ultroid_cmd(pattern="mediainfo( (.*)|$)")
+@ultroid_cmd(pattern="mediainfo( (.*)|$)", category="Media")
 async def mi(e):
     r = await e.get_reply_message()
     match = e.pattern_match.group(1).strip()
@@ -110,7 +110,7 @@ async def mi(e):
         os.remove(naam)
 
 
-@ultroid_cmd(pattern="rotate( (.*)|$)")
+@ultroid_cmd(pattern="rotate( (.*)|$)", category="Media")
 async def rotate_(ult):
     match = ult.pattern_match.group(1).strip()
     if not ult.is_reply:

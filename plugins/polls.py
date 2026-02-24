@@ -23,7 +23,7 @@ from telethon.tl.types import InputMediaPoll, Poll, PollAnswer, TextWithEntities
 from . import get_string, ultroid_cmd
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Tools", 
     pattern="poll( (.*)|$)",
 )
 async def uri_poll(e):

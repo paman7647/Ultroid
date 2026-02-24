@@ -14,7 +14,7 @@ import asyncio
 from . import get_string, ultroid_cmd
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Fun", 
     pattern="del$",
     manager=True,
 )
@@ -27,7 +27,7 @@ async def delete_it(delme):
 
 
 @ultroid_cmd(
-    pattern="copy$",
+    pattern="copy$", category="Fun",
 )
 async def copy(e):
     reply = await e.get_reply_message()
@@ -38,7 +38,7 @@ async def copy(e):
 
 
 @ultroid_cmd(
-    pattern="edit",
+    pattern="edit", category="Fun",
 )
 async def editer(edit):
     message = edit.text
@@ -62,7 +62,7 @@ async def editer(edit):
 
 
 @ultroid_cmd(
-    pattern="reply$",
+    pattern="reply$", category="Fun",
 )
 async def _(e):
     if e.reply_to_msg_id:

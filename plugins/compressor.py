@@ -35,7 +35,7 @@ from . import (
 )
 
 
-@ultroid_cmd(pattern="compress( (.*)|$)")
+@ultroid_cmd(pattern="compress( (.*)|$)", category="Media")
 async def _(e):
     cr = e.pattern_match.group(1).strip()
     crf = 27

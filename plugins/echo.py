@@ -17,7 +17,7 @@ from pyUltroid.dB.echo_db import add_echo, check_echo, list_echo, rem_echo
 from . import inline_mention, ultroid_cmd
 
 
-@ultroid_cmd(pattern="addecho( (.*)|$)")
+@ultroid_cmd(pattern="addecho( (.*)|$)", category="Tools")
 async def echo(e):
     r = await e.get_reply_message()
     if r:
@@ -40,7 +40,7 @@ async def echo(e):
     await e.eor(f"Activated Echo For {user}.")
 
 
-@ultroid_cmd(pattern="remecho( (.*)|$)")
+@ultroid_cmd(pattern="remecho( (.*)|$)", category="Tools")
 async def rm(e):
     r = await e.get_reply_message()
     if r:
@@ -63,7 +63,7 @@ async def rm(e):
     await e.eor("Echo not activated for this user")
 
 
-@ultroid_cmd(pattern="listecho$")
+@ultroid_cmd(pattern="listecho$", category="Tools")
 async def lstecho(e):
     if k := list_echo(e.chat_id):
         user = "**Activated Echo For Users:**\n\n"

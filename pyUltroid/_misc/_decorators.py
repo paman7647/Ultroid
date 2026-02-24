@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import asyncio
 import inspect
@@ -40,7 +40,7 @@ from strings import get_string
 from .. import *
 from .. import _ignore_eval
 from ..dB import DEVLIST
-from ..dB._core import LIST, LOADED
+from ..dB._core import LIST, LOADED, PLUGIN_CATEGORIES
 from ..fns.admins import admin_check
 from ..fns.helper import bash
 from ..fns.helper import time_formatter as tf
@@ -75,6 +75,7 @@ def ultroid_cmd(
     fullsudo = kwargs.get("fullsudo", False)
     only_devs = kwargs.get("only_devs", False)
     func = kwargs.get("func", lambda e: not e.via_bot_id)
+    category = kwargs.get("category", None)  # v3.0: inline category declaration
 
     def decor(dec):
         async def wrapp(ult):
@@ -325,6 +326,9 @@ def ultroid_cmd(
                 ),
             )
         file = Path(inspect.stack()[1].filename)
+        # v3.0: Register decorator-declared category
+        if category and file.stem not in PLUGIN_CATEGORIES:
+            PLUGIN_CATEGORIES[file.stem] = category
         if "addons/" in str(file):
             if LOADED.get(file.stem):
                 LOADED[file.stem].append(wrapp)

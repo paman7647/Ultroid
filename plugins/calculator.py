@@ -43,7 +43,7 @@ lst = list(zip(tultd[::4], tultd[1::4], tultd[2::4], tultd[3::4]))
 lst.append([Button.inline("=", data="calc=")])
 
 
-@ultroid_cmd(pattern="calc")
+@ultroid_cmd(pattern="calc", category="Tools")
 async def icalc(e):
     udB.del_key("calc")
     if e.client._bot:

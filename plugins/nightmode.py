@@ -47,7 +47,7 @@ from . import get_string, udB, ultroid_bot, ultroid_cmd
 keym = KeyManager("NIGHT_CHATS", cast=list)
 
 
-@ultroid_cmd(pattern="nmtime( (.*)|$)")
+@ultroid_cmd(pattern="nmtime( (.*)|$)", category="Owner")
 async def set_time(e):
     if not e.pattern_match.group(1).strip():
         return await e.eor(get_string("nightm_1"))
@@ -62,7 +62,7 @@ async def set_time(e):
         await e.eor(get_string("nightm_1"))
 
 
-@ultroid_cmd(pattern="addnm( (.*)|$)")
+@ultroid_cmd(pattern="addnm( (.*)|$)", category="Owner")
 async def add_grp(e):
     if pat := e.pattern_match.group(1).strip():
         try:
@@ -74,7 +74,7 @@ async def add_grp(e):
     await e.eor(get_string("nightm_3"))
 
 
-@ultroid_cmd(pattern="remnm( (.*)|$)")
+@ultroid_cmd(pattern="remnm( (.*)|$)", category="Owner")
 async def r_em_grp(e):
     if pat := e.pattern_match.group(1).strip():
         try:
@@ -86,7 +86,7 @@ async def r_em_grp(e):
     await e.eor(get_string("nightm_4"))
 
 
-@ultroid_cmd(pattern="listnm$")
+@ultroid_cmd(pattern="listnm$", category="Owner")
 async def rem_grp(e):
     chats = keym.get()
     name = "NightMode Groups Are-:\n\n"
@@ -154,4 +154,5 @@ if AsyncIOScheduler and keym.get():
         sch.add_job(open_grp, trigger="cron", hour=h2, minute=m2)
         sch.start()
     except Exception as er:
-        LOGS.info(er)
+        if "event loop" not in str(er).lower():
+            LOGS.info(er)

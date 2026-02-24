@@ -129,14 +129,14 @@ CAPTION_LIMIT = 1024  # Telegram's caption character limit for non-premium
 _copied_msg = {}
 
 
-@ultroid_cmd(pattern="kickme$", fullsudo=True)
+@ultroid_cmd(pattern="kickme$", category="Tools", fullsudo=True)
 async def leave(ult):
     await ult.eor(f"`{ult.client.me.first_name} has left this group, bye!!.`")
     await ult.client(LeaveChannelRequest(ult.chat_id))
 
 
 @ultroid_cmd(
-    pattern="date$",
+    pattern="date$", category="Tools",
 )
 async def date(event):
     m = dt.now().month
@@ -147,7 +147,7 @@ async def date(event):
 
 
 @ultroid_cmd(
-    pattern="listreserved$",
+    pattern="listreserved$", category="Tools",
 )
 async def _(event):
     result = await event.client(GetAdminedPublicChannelsRequest())
@@ -161,7 +161,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="stats$",
+    pattern="stats$", category="Tools",
 )
 async def stats(
     event: NewMessage.Event,
@@ -235,7 +235,7 @@ async def stats(
     await ok.edit(response)
 
 
-@ultroid_cmd(pattern="paste( (.*)|$)", manager=True, allow_all=True)
+@ultroid_cmd(pattern="paste( (.*)|$)", category="Tools", manager=True, allow_all=True)
 async def _(event):
     try:
         input_str = event.text.split(maxsplit=1)[1]
@@ -281,7 +281,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="info( (.*)|$)",
+    pattern="info( (.*)|$)", category="Tools",
     manager=True,
 )
 async def _(event):
@@ -382,7 +382,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="invite( (.*)|$)",
+    pattern="invite( (.*)|$)", category="Tools",
     groups_only=True,
 )
 async def _(ult):
@@ -420,7 +420,7 @@ async def _(ult):
 
 
 @ultroid_cmd(
-    pattern="rmbg($| (.*))",
+    pattern="rmbg($| (.*))", category="Tools",
 )
 async def abs_rmbg(event):
     RMBG_API = udB.get_key("RMBG_API")
@@ -476,7 +476,7 @@ async def abs_rmbg(event):
 
 
 @ultroid_cmd(
-    pattern="telegraph( (.*)|$)",
+    pattern="telegraph( (.*)|$)", category="Tools",
 )
 async def telegraphcmd(event):
     xx = await event.eor(get_string("com_1"))
@@ -515,7 +515,7 @@ async def telegraphcmd(event):
     )
 
 
-@ultroid_cmd(pattern="json( (.*)|$)")
+@ultroid_cmd(pattern="json( (.*)|$)", category="Tools")
 async def _(event):
     reply_to_id = None
     match = event.pattern_match.group(1).strip()
@@ -562,7 +562,7 @@ async def _(event):
         await event.eor(f"```{msg or None}```")
 
 
-@ultroid_cmd(pattern="suggest( (.*)|$)", manager=True)
+@ultroid_cmd(pattern="suggest( (.*)|$)", category="Tools", manager=True)
 async def sugg(event):
     sll = event.text.split(maxsplit=1)
     try:
@@ -598,7 +598,7 @@ async def sugg(event):
     await event.delete()
 
 
-@ultroid_cmd(pattern="ipinfo( (.*)|$)")
+@ultroid_cmd(pattern="ipinfo( (.*)|$)", category="Tools")
 async def ipinfo(event):
     ip = event.text.split()
     ipaddr = ""
@@ -647,7 +647,7 @@ async def ipinfo(event):
 
 
 @ultroid_cmd(
-    pattern="cpy$",
+    pattern="cpy$", category="Tools",
 )
 async def copp(event):
     msg = await event.get_reply_message()
@@ -663,7 +663,7 @@ async def pepsodent(event):
 
 
 @ultroid_cmd(
-    pattern="pst$",
+    pattern="pst$", category="Tools",
 )
 async def colgate(event):
     await toothpaste(event)
@@ -682,7 +682,7 @@ async def toothpaste(event):
     await event.delete()
 
 
-@ultroid_cmd(pattern="thumb$")
+@ultroid_cmd(pattern="thumb$", category="Tools")
 async def thumb_dl(event):
     reply = await event.get_reply_message()
     if not (reply and reply.file):
@@ -732,7 +732,7 @@ async def get_thumbnail(file_path, thumbnail_path):
     except Exception as e:
         print(f"Error extracting thumbnail: {e}")
 
-@ultroid_cmd(pattern="getmsg( ?(.*)|$)")
+@ultroid_cmd(pattern="getmsg( ?(.*)|$)", category="Tools")
 async def get_restricted_msg(event):
     match = event.pattern_match.group(1).strip()
     if not match:

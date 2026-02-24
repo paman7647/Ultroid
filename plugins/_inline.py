@@ -32,7 +32,7 @@ from . import (
     start_time,
     udB,
 )
-from ._help import _main_help_menu
+from ._help import get_main_menu
 
 # ================================================#
 
@@ -41,8 +41,9 @@ helps = get_string("inline_1")
 add_ons = udB.get_key("ADDONS")
 
 zhelps = get_string("inline_3") if add_ons is False else get_string("inline_2")
-PLUGINS = HELP.get("Official", [])
-ADDONS = HELP.get("Addons", [])
+# Dynamic Categories Replaced Flat Lists
+PLUGINS = {}
+ADDONS = HELP.get("Addons", {})
 upage = 0
 # ============================================#
 
@@ -94,20 +95,21 @@ async def inline_handler(event):
         z.extend(x)
     text = get_string("inline_4").format(
         OWNER_NAME,
-        len(HELP.get("Official", [])),
-        len(HELP.get("Addons", [])),
+        sum(len(v) for k, v in HELP.items() if k != "Addons" and k != "VCBot"),
+        len(HELP.get("Addons", {})),
         len(z),
     )
+    menus = get_main_menu()
     if inline_pic():
         result = await event.builder.photo(
             file=inline_pic(),
             link_preview=False,
             text=text,
-            buttons=_main_help_menu,
+            buttons=menus,
         )
     else:
         result = await event.builder.article(
-            title="Ultroid Help Menu", text=text, buttons=_main_help_menu
+            title="Ultroid Help Menu", text=text, buttons=menus
         )
     await event.answer([result], private=True, cache_time=300, gallery=True)
 
@@ -142,8 +144,8 @@ async def setting(event):
     await event.edit(
         get_string("inline_4").format(
             OWNER_NAME,
-            len(HELP.get("Official", [])),
-            len(HELP.get("Addons", [])),
+            sum(len(v) for k, v in HELP.items() if k != "Addons" and k != "VCBot"),
+            len(HELP.get("Addons", {})),
             len(z),
         ),
         file=inline_pic(),
@@ -164,18 +166,26 @@ async def setting(event):
 
 _strings = {"Official": helps, "Addons": zhelps, "VCBot": get_string("inline_6")}
 
-
 @callback(re.compile("uh_(.*)"), owner=True)
 async def help_func(ult):
     key, count = ult.data_match.group(1).decode("utf-8").split("_")
     if key == "VCBot" and HELP.get("VCBot") is None:
         return await ult.answer(get_string("help_12"), alert=True)
-    elif key == "Addons" and HELP.get("Addons") is None:
+    elif key == "Addons" and not HELP.get("Addons"):
         return await ult.answer(get_string("help_13").format(HNDLR), alert=True)
+    
+    if key not in HELP or not HELP[key]:
+        return await ult.answer(f"No plugins found in category {key}!", alert=True)
+
     if "|" in count:
         _, count = count.split("|")
     count = int(count) if count else 0
-    text = _strings.get(key, "").format(OWNER_NAME, len(HELP.get(key)))
+    
+    cat_string = _strings.get(key)
+    if not cat_string:
+         cat_string = f"**{key} Plugins:**\n"
+         
+    text = cat_string.format(OWNER_NAME, len(HELP.get(key, {})))
     await ult.edit(text, buttons=page_num(count, key), link_preview=False)
 
 
@@ -305,11 +315,11 @@ async def opner(event):
     await event.edit(
         get_string("inline_4").format(
             OWNER_NAME,
-            len(HELP.get("Official", [])),
-            len(HELP.get("Addons", [])),
+            sum(len(v) for k, v in HELP.items() if k != "Addons" and k != "VCBot"),
+            len(HELP.get("Addons", {})),
             len(z),
         ),
-        buttons=_main_help_menu,
+        buttons=get_main_menu(),
         link_preview=False,
     )
 

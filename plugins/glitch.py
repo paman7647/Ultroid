@@ -15,7 +15,7 @@ import os
 from . import bash, get_string, mediainfo, ultroid_cmd
 
 
-@ultroid_cmd(pattern="glitch$")
+@ultroid_cmd(pattern="glitch$", category="Media")
 async def _(e):
     try:
         import glitch_me  # ignore :pylint

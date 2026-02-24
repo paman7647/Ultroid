@@ -19,7 +19,7 @@ from pyUltroid.fns.tools import _webupload_cache
 from . import Button, asst, get_string, ultroid_cmd
 
 
-@ultroid_cmd(pattern="webupload( (.*)|$)")
+@ultroid_cmd(pattern="webupload( (.*)|$)", category="Media")
 async def _(event):
     xx = await event.eor(get_string("com_1"))
     match = event.pattern_match.group(1).strip()

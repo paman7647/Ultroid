@@ -282,7 +282,7 @@ async def get_ai_response(provider, prompt, api_key, stream=False):
         yield f"Error: {str(e)}"
 
 
-@ultroid_cmd(pattern="gemini( (.*)|$)")
+@ultroid_cmd(pattern="gemini( (.*)|$)", category="Owner")
 async def gemini_ai(event):
     """Use Google Gemini"""
     prompt = event.pattern_match.group(1).strip()
@@ -322,7 +322,7 @@ async def gemini_ai(event):
         except Exception:
                 pass
 
-@ultroid_cmd(pattern="antr( (.*)|$)")
+@ultroid_cmd(pattern="antr( (.*)|$)", category="Owner")
 async def anthropic_ai(event):
     """Use Anthropic Claude"""
     prompt = event.pattern_match.group(1).strip()
@@ -362,7 +362,7 @@ async def anthropic_ai(event):
         except Exception:
             pass
 
-@ultroid_cmd(pattern="gpt( (.*)|$)")
+@ultroid_cmd(pattern="gpt( (.*)|$)", category="Owner")
 async def openai_ai(event):
     """Use OpenAI GPT"""
     prompt = event.pattern_match.group(1).strip()
@@ -402,7 +402,7 @@ async def openai_ai(event):
         except Exception:
             pass
 
-@ultroid_cmd(pattern="deepseek( (.*)|$)")
+@ultroid_cmd(pattern="deepseek( (.*)|$)", category="Owner")
 async def deepseek_ai(event):
     """Use DeepSeek AI"""
     prompt = event.pattern_match.group(1).strip()

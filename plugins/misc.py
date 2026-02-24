@@ -39,7 +39,7 @@ except ImportError:
 from . import async_searcher, get_random_user_data, get_string, re, ultroid_cmd
 
 
-@ultroid_cmd(pattern="eod$")
+@ultroid_cmd(pattern="eod$", category="Tools")
 async def diela(e):
     m = await e.eor(get_string("com_1"))
     li = "https://daysoftheyear.com"
@@ -56,7 +56,7 @@ async def diela(e):
 
 
 @ultroid_cmd(
-    pattern="pntrst( (.*)|$)",
+    pattern="pntrst( (.*)|$)", category="Tools",
 )
 async def pinterest(e):
     m = e.pattern_match.group(1).strip()
@@ -76,7 +76,7 @@ async def pinterest(e):
     await e.client.send_file(e.chat_id, file, caption=f"Pin:- {m}")
 
 
-@ultroid_cmd(pattern="gadget( (.*)|$)")
+@ultroid_cmd(pattern="gadget( (.*)|$)", category="Tools")
 async def mobs(e):
     mat = e.pattern_match.group(1).strip()
     if not mat:
@@ -111,7 +111,7 @@ async def mobs(e):
     await bt.delete()
 
 
-@ultroid_cmd(pattern="randomuser")
+@ultroid_cmd(pattern="randomuser", category="Tools")
 async def _gen_data(event):
     x = await event.eor(get_string("com_1"))
     msg, pic = await get_random_user_data()
@@ -120,7 +120,7 @@ async def _gen_data(event):
 
 
 @ultroid_cmd(
-    pattern="ascii( (.*)|$)",
+    pattern="ascii( (.*)|$)", category="Tools",
 )
 async def _(e):
     if not Img2HTMLConverter:

@@ -23,7 +23,7 @@ from PIL import Image, ImageDraw, ImageFont
 from . import async_searcher, eod, get_string, text_set, ultroid_cmd
 
 
-@ultroid_cmd(pattern="gethtml( (.*)|$)")
+@ultroid_cmd(pattern="gethtml( (.*)|$)", category="Tools")
 async def ghtml(e):
     if txt := e.pattern_match.group(1).strip():
         link = e.text.split(maxsplit=1)[1]
@@ -35,7 +35,7 @@ async def ghtml(e):
     await e.reply(file="file.html")
 
 
-@ultroid_cmd(pattern="image( (.*)|$)")
+@ultroid_cmd(pattern="image( (.*)|$)", category="Tools")
 async def f2i(e):
     txt = e.pattern_match.group(1).strip()
     html = None
@@ -59,7 +59,7 @@ async def f2i(e):
         os.remove(html)
 
 
-@ultroid_cmd(pattern="write( (.*)|$)")
+@ultroid_cmd(pattern="write( (.*)|$)", category="Tools")
 async def writer(e):
     if e.reply_to:
         reply = await e.get_reply_message()

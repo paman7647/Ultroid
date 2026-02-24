@@ -86,7 +86,7 @@ from . import (
 )
 
 
-@ultroid_cmd(pattern="color$")
+@ultroid_cmd(pattern="color$", category="Media")
 async def _(event):
     reply = await event.get_reply_message()
     if not (reply and reply.media):
@@ -116,7 +116,7 @@ async def _(event):
     await xx.delete()
 
 
-@ultroid_cmd(pattern="(grey|blur|negative|danger|mirror|quad|sketch|flip|toon)$")
+@ultroid_cmd(pattern="(grey|blur|negative|danger|mirror|quad|sketch|flip|toon)$", category="Media")
 async def ult_tools(event):
     match = event.pattern_match.group(1)
     ureply = await event.get_reply_message()
@@ -187,7 +187,7 @@ async def ult_tools(event):
     os.remove(file)
 
 
-@ultroid_cmd(pattern="csample (.*)")
+@ultroid_cmd(pattern="csample (.*)", category="Media")
 async def sampl(ult):
     if color := ult.pattern_match.group(1).strip():
         img = Image.new("RGB", (200, 100), f"{color}")
@@ -206,7 +206,7 @@ async def sampl(ult):
 
 
 @ultroid_cmd(
-    pattern="blue$",
+    pattern="blue$", category="Media",
 )
 async def ultd(event):
     ureply = await event.get_reply_message()
@@ -240,7 +240,7 @@ async def ultd(event):
     os.remove(ultt)
 
 
-@ultroid_cmd(pattern="border( (.*)|$)")
+@ultroid_cmd(pattern="border( (.*)|$)", category="Media")
 async def ok(event):
     hm = await event.get_reply_message()
     if not (hm and (hm.photo or hm.sticker)):
@@ -268,7 +268,7 @@ async def ok(event):
     await event.delete()
 
 
-@ultroid_cmd(pattern="pixelator( (.*)|$)")
+@ultroid_cmd(pattern="pixelator( (.*)|$)", category="Media")
 async def pixelator(event):
     reply_message = await event.get_reply_message()
     if not (reply_message and (reply_message.photo or reply_message.sticker)):

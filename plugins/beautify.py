@@ -28,7 +28,7 @@ else:
 
 
 @ultroid_cmd(
-    pattern="(rc|c)arbon",
+    pattern="(rc|c)arbon", category="Tools",
 )
 async def cr_bn(event):
     xxxx = await event.eor(get_string("com_1"))
@@ -60,7 +60,7 @@ async def cr_bn(event):
 
 
 @ultroid_cmd(
-    pattern="ccarbon( (.*)|$)",
+    pattern="ccarbon( (.*)|$)", category="Tools",
 )
 async def crbn(event):
     match = event.pattern_match.group(1).strip()
@@ -109,7 +109,7 @@ RaySoTheme = [
 ]
 
 
-@ultroid_cmd(pattern="rayso")
+@ultroid_cmd(pattern="rayso", category="Tools")
 async def pass_on(ult):
     try:
         from playwright.async_api import async_playwright

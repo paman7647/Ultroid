@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import ast
 import os
@@ -340,13 +340,81 @@ def UltroidDB():
         elif psycopg2:
             return SqlDB(Var.DATABASE_URL)
         else:
-            LOGS.critical(
-                "No DB requirement fullfilled!\nPlease install redis, mongo or sql dependencies...\nTill then using local file as database."
-            )
-            return LocalDB()
-    except BaseException as err:
+            try:
+                import aiosqlite
+                return SqliteDB()
+            except ImportError:
+                LOGS.critical(
+                    "No DB requirement fullfilled!\nPlease install redis, mongo or sql dependencies...\nTill then using local file as database."
+                )
+                return LocalDB()
+    except Exception as err:
         LOGS.exception(err)
     exit()
+
+class SqliteDB(_BaseDatabase):
+    def __init__(self):
+        import sqlite3
+        self._connection = sqlite3.connect("ultroid.db", check_same_thread=False)
+        self._connection.execute(
+            "CREATE TABLE IF NOT EXISTS Ultroid (key TEXT PRIMARY KEY, value TEXT)"
+        )
+        self._connection.commit()
+        super().__init__()
+
+    @property
+    def name(self):
+        return "SqliteDB"
+
+    @property
+    def usage(self):
+        return 0
+
+    def keys(self):
+        cursor = self._connection.execute("SELECT key FROM Ultroid")
+        return [row[0] for row in cursor.fetchall()]
+
+    def set(self, key, value):
+        import json
+        self._connection.execute(
+            "INSERT OR REPLACE INTO Ultroid (key, value) VALUES (?, ?)",
+            (str(key), json.dumps(value)),
+        )
+        self._connection.commit()
+        return True
+
+    def get(self, key):
+        import json
+        cursor = self._connection.execute(
+            "SELECT value FROM Ultroid WHERE key = ?", (str(key),)
+        )
+        row = cursor.fetchone()
+        if row:
+            try:
+                return json.loads(row[0])
+            except ValueError:
+                return row[0]
+        return None
+
+    def delete(self, key):
+        self._connection.execute(
+            "DELETE FROM Ultroid WHERE key = ?", (str(key),)
+        )
+        self._connection.commit()
+        return True
+
+    def rename(self, old_key, new_key):
+        self._connection.execute(
+            "UPDATE Ultroid SET key = ? WHERE key = ?", (str(new_key), str(old_key))
+        )
+        self._connection.commit()
+        return True
+        
+    def flushall(self):
+        self._connection.execute("DELETE FROM Ultroid")
+        self._connection.commit()
+        return True
+
 
 
 # --------------------------------------------------------------------------------------------- #

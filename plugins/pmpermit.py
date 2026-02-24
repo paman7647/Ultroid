@@ -127,7 +127,7 @@ async def delete_pm_warn_msgs(chat: int):
 if udB.get_key("PMLOG"):
 
     @ultroid_cmd(
-        pattern="logpm$",
+        pattern="logpm$", category="Owner",
     )
     async def _(e):
         if not e.is_private:
@@ -139,7 +139,7 @@ if udB.get_key("PMLOG"):
         return await e.eor("`Now I Will log msgs from here.`", time=3)
 
     @ultroid_cmd(
-        pattern="nologpm$",
+        pattern="nologpm$", category="Owner",
     )
     async def _(e):
         if not e.is_private:
@@ -383,7 +383,7 @@ if udB.get_key("PMSETTING"):
                     f"**{mention}** [`{user.id}`] was Blocked for spamming.",
                 )
 
-    @ultroid_cmd(pattern="(start|stop|clear)archive$", fullsudo=True)
+    @ultroid_cmd(pattern="(start|stop|clear)archive$", category="Owner", fullsudo=True)
     async def _(e):
         x = e.pattern_match.group(1).strip()
         if x == "start":
@@ -399,7 +399,7 @@ if udB.get_key("PMSETTING"):
             except Exception as mm:
                 await e.eor(str(mm), time=5)
 
-    @ultroid_cmd(pattern="(a|approve)(?: |$)", fullsudo=True)
+    @ultroid_cmd(pattern="(a|approve)(?: |$)", category="Owner", fullsudo=True)
     async def approvepm(apprvpm):
         if apprvpm.reply_to_msg_id:
             user = (await apprvpm.get_reply_message()).sender
@@ -450,7 +450,7 @@ if udB.get_key("PMSETTING"):
         else:
             await apprvpm.eor("`User may already be approved.`", time=5)
 
-    @ultroid_cmd(pattern="(da|disapprove)(?: |$)", fullsudo=True)
+    @ultroid_cmd(pattern="(da|disapprove)(?: |$)", category="Owner", fullsudo=True)
     async def disapprovepm(e):
         if e.reply_to_msg_id:
             user = (await e.get_reply_message()).sender
@@ -501,7 +501,7 @@ if udB.get_key("PMSETTING"):
             )
 
 
-@ultroid_cmd(pattern="block( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="block( (.*)|$)", category="Owner", fullsudo=True)
 async def blockpm(block):
     match = block.pattern_match.group(1).strip()
     if block.reply_to_msg_id:
@@ -544,7 +544,7 @@ async def blockpm(block):
         pass
 
 
-@ultroid_cmd(pattern="unblock( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="unblock( (.*)|$)", category="Owner", fullsudo=True)
 async def unblockpm(event):
     match = event.pattern_match.group(1).strip()
     reply = await event.get_reply_message()
@@ -606,7 +606,7 @@ async def unblockpm(event):
         pass
 
 
-@ultroid_cmd(pattern="listapproved$", owner=True)
+@ultroid_cmd(pattern="listapproved$", category="Owner", owner=True)
 async def list_approved(event):
     xx = await event.eor(get_string("com_1"))
     all = keym.get()

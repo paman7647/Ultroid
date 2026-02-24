@@ -3,7 +3,7 @@
 #
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
-# <https://github.com/TeamUltroid/pyUltroid/blob/main/LICENSE>.
+# <https://github.com/TeamUltroid/Ultroid/blob/main/LICENSE>.
 
 import asyncio
 import math
@@ -244,6 +244,7 @@ if run_as_module:
             ch_log += f"\n\n💬 <b>{c.count()}</b> 🗓 <b>[{c.committed_datetime.strftime(d_form)}]</b>\n<b><a href={UPSTREAM_REPO_URL.rstrip('/')}/commit/{c}>[{c.summary}]</a></b> 👨‍💻 <code>{c.author}</code>"
             tldr_log += f"\n\n💬 {c.count()} 🗓 [{c.committed_datetime.strftime(d_form)}]\n[{c.summary}] 👨‍💻 {c.author}"
         if ch_log:
+            ch += f"\n\n**Maintained by: [paman7647/ultroid](https://github.com/paman7647/ultroid)**"
             return str(ch + ch_log), str(ch_tl + tldr_log)
         return ch_log, tldr_log
 
@@ -275,10 +276,14 @@ async def bash(cmd, run_code=0):
 async def updater():
     from .. import LOGS
 
+    from git.exc import InvalidGitRepositoryError
     try:
         off_repo = Repo().remotes[0].config_reader.get("url").replace(".git", "")
+    except InvalidGitRepositoryError:
+        LOGS.info("No Git repository found for updates.")
+        return
     except Exception as er:
-        LOGS.exception(er)
+        LOGS.error(f"Updater exception: {er}")
         return
     try:
         repo = Repo()
@@ -539,7 +544,7 @@ async def progress(current, total, event, start, type_of_ps, file_name=None):
         time_to_completion = round((total - current) / speed) * 1000
         progress_str = "`[{0}{1}] {2}%`\n\n".format(
             "".join("●" for i in range(math.floor(percentage / 5))),
-            "".join("" for i in range(20 - math.floor(percentage / 5))),
+            "".join("○" for i in range(20 - math.floor(percentage / 5))),
             round(percentage, 2),
         )
 

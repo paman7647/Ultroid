@@ -20,7 +20,7 @@ from . import HNDLR, get_string, mediainfo, ultroid_cmd
 from ._inline import something
 
 
-@ultroid_cmd(pattern="button")
+@ultroid_cmd(pattern="button", category="Owner")
 async def butt(event):
     media, wut, text = None, None, None
     if event.reply_to:

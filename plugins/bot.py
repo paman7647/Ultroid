@@ -71,6 +71,9 @@ def ULTPIC():
 buttons = [
     [
         Button.url(get_string("bot_3"), "https://github.com/TeamUltroid/Ultroid"),
+        Button.url("Mᴀɪɴᴛᴀɪɴᴇᴅ", "https://github.com/paman7647/ultroid"),
+    ],
+    [
         Button.url(get_string("bot_4"), "t.me/UltroidSupportChat"),
     ]
 ]
@@ -94,7 +97,7 @@ async def alive(event):
 
 
 @ultroid_cmd(
-    pattern="alive( (.*)|$)",
+    pattern="alive( (.*)|$)", category="Owner",
 )
 async def lol(ult):
     match = ult.pattern_match.group(1).strip()
@@ -113,9 +116,13 @@ async def lol(ult):
         pic = choice(pic)
     uptime = time_formatter((time.time() - start_time) * 1000)
     header = udB.get_key("ALIVE_TEXT") or get_string("bot_1")
-    y = Repo().active_branch
-    xx = Repo().remotes[0].config_reader.get("url")
-    rep = xx.replace(".git", f"/tree/{y}")
+    try:
+        y = Repo().active_branch
+        xx = Repo().remotes[0].config_reader.get("url")
+        rep = xx.replace(".git", f"/tree/{y}")
+    except Exception:
+        y = "main"
+        rep = "https://github.com/TeamUltroid/Ultroid/tree/main"
     kk = f" `[{y}]({rep})` "
     if inline:
         kk = f"<a href={rep}>{y}</a>"
@@ -180,7 +187,7 @@ async def lol(ult):
     )
 
 
-@ultroid_cmd(pattern="ping$", chats=[], type=["official", "assistant"])
+@ultroid_cmd(pattern="ping$", category="Owner", chats=[], type=["official", "assistant"])
 async def _(event):
     start = time.time()
     x = await event.eor("Pong !")
@@ -190,7 +197,7 @@ async def _(event):
 
 
 @ultroid_cmd(
-    pattern="cmds$",
+    pattern="cmds$", category="Owner",
 )
 async def cmds(event):
     await allcmds(event, Telegraph)
@@ -200,7 +207,7 @@ heroku_api = Var.HEROKU_API
 
 
 @ultroid_cmd(
-    pattern="restart$",
+    pattern="restart$", category="Owner",
     fullsudo=True,
 )
 async def restartbt(ult):
@@ -219,7 +226,7 @@ async def restartbt(ult):
 
 
 @ultroid_cmd(
-    pattern="shutdown$",
+    pattern="shutdown$", category="Owner",
     fullsudo=True,
 )
 async def shutdownbot(ult):
@@ -227,7 +234,7 @@ async def shutdownbot(ult):
 
 
 @ultroid_cmd(
-    pattern="logs( (.*)|$)",
+    pattern="logs( (.*)|$)", category="Owner",
     chats=[],
 )
 async def _(event):
@@ -317,7 +324,7 @@ async def inline_alive(ult):
     await ult.answer(result)
 
 
-@ultroid_cmd(pattern="update( (.*)|$)")
+@ultroid_cmd(pattern="update( (.*)|$)", category="Owner")
 async def _(e):
     xx = await e.eor(get_string("upd_1"))
     if e.pattern_match.group(1).strip() and (
@@ -348,7 +355,8 @@ async def _(e):
         )
     else:
         await xx.edit(
-            f'<code>Your BOT is </code><strong>up-to-date</strong><code> with </code><strong><a href="https://github.com/TeamUltroid/Ultroid/tree/{branch}">[{branch}]</a></strong>',
+            f'<code>Your BOT is </code><strong>up-to-date</strong><code> with </code><strong><a href="https://github.com/TeamUltroid/Ultroid/tree/{branch}">[{branch}]</a></strong>'
+            f'\n\n✨ <b><a href="https://github.com/paman7647/ultroid">Nᴇᴡ - Mᴀɪɴᴛᴀɪɴᴇᴅ Version Available</a></b>',
             parse_mode="html",
             link_preview=False,
         )

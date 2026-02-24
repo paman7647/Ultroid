@@ -23,7 +23,7 @@
 from . import HNDLR, eod, get_string, ultroid_cmd
 
 
-@ultroid_cmd(pattern="(send|dm)( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="(send|dm)( (.*)|$)", category="Tools", fullsudo=True)
 async def dm(e):
     if len(e.text.split()) <= 1:
         return await e.eor(get_string("dm_1"), time=5)
@@ -48,7 +48,7 @@ async def dm(e):
         await e.eor(get_string("dm_4").format(m, HNDLR), time=5)
 
 
-@ultroid_cmd(pattern="fwdreply( (.*)|$)", fullsudo=True)
+@ultroid_cmd(pattern="fwdreply( (.*)|$)", category="Tools", fullsudo=True)
 async def _(e):
     message = e.pattern_match.group(1).strip()
     if not e.reply_to_msg_id:
@@ -61,7 +61,7 @@ async def _(e):
     await e.eor(get_string("dm_5"), time=5)
 
 
-@ultroid_cmd(pattern="(f|)save$")
+@ultroid_cmd(pattern="(f|)save$", category="Tools")
 async def saf(e):
     x = await e.get_reply_message()
     if not x:

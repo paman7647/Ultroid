@@ -22,7 +22,7 @@ Fonts = {
 }
 
 
-@ultroid_cmd(
+@ultroid_cmd(category="Tools", 
     pattern="font( (.*)|$)",
 )
 async def _(e):

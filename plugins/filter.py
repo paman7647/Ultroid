@@ -22,7 +22,7 @@ from . import events, get_string, mediainfo, udB, ultroid_bot, ultroid_cmd, uplo
 from ._inline import something
 
 
-@ultroid_cmd(pattern="addfilter( (.*)|$)")
+@ultroid_cmd(pattern="addfilter( (.*)|$)", category="Admin")
 async def af(e):
     wrd = (e.pattern_match.group(1).strip()).lower()
     wt = await e.get_reply_message()
@@ -60,7 +60,7 @@ async def af(e):
     ultroid_bot.add_handler(filter_func, events.NewMessage())
 
 
-@ultroid_cmd(pattern="remfilter( (.*)|$)")
+@ultroid_cmd(pattern="remfilter( (.*)|$)", category="Admin")
 async def rf(e):
     wrd = (e.pattern_match.group(1).strip()).lower()
     chat = e.chat_id
@@ -70,7 +70,7 @@ async def rf(e):
     await e.eor(get_string("flr_5").format(wrd))
 
 
-@ultroid_cmd(pattern="listfilter$")
+@ultroid_cmd(pattern="listfilter$", category="Admin")
 async def lsnote(e):
     if x := list_filter(e.chat_id):
         sd = "Filters Found In This Chats Are\n\n"

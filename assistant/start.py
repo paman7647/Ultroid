@@ -30,6 +30,7 @@ if Owner_info_msg is None:
 **Message Forwards** - {udB.get_key("PMBOT")}
 
 **Ultroid [v{ultroid_version}](https://github.com/TeamUltroid/Ultroid), powered by @TeamUltroid**
+**[Nᴇᴡ - Mᴀɪɴᴛᴀɪɴᴇᴅ](https://github.com/paman7647/ultroid)**
 """
 
 
@@ -44,21 +45,28 @@ _settings = [
     ],
     [
         Button.inline("Fᴇᴀᴛᴜʀᴇs", data="cbs_otvars"),
-        Button.inline("VC Sᴏɴɢ Bᴏᴛ", data="cbs_vcb"),
+        Button.inline("Pʟᴜɢɪɴs 🔌", data="plug_mgr"),
     ],
     [Button.inline("« Bᴀᴄᴋ", data="mainmenu")],
 ]
 
 _start = [
     [
-        Button.inline("Lᴀɴɢᴜᴀɢᴇ 🌐", data="lang"),
+        Button.inline("Dᴀsʜʙᴏᴀʀᴅ 📊", data="stat"),
         Button.inline("Sᴇᴛᴛɪɴɢs ⚙️", data="setter"),
     ],
     [
-        Button.inline("Sᴛᴀᴛs ✨", data="stat"),
-        Button.inline("Bʀᴏᴀᴅᴄᴀsᴛ 📻", data="bcast"),
+        Button.inline("🤖 AI Mᴇɴᴜ", data="ai_settings"),
+        Button.inline("🔋 Bᴏᴛ Cᴛʀʟ", data="bot_control"),
     ],
-    [Button.inline("TɪᴍᴇZᴏɴᴇ 🌎", data="tz")],
+    [
+        Button.inline("🔒 Sᴇᴄᴜʀɪᴛʏ", data="security"),
+        Button.inline("👤 Usᴇʀ Mɢʀ", data="user_mgr"),
+    ],
+    [
+        Button.inline("📻 Bʀᴏᴀᴅᴄᴀsᴛ", data="bcast"),
+        Button.inline("🌐 Lᴀɴɢᴜᴀɢᴇ", data="lang"),
+    ],
 ]
 
 

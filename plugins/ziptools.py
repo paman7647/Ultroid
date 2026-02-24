@@ -38,7 +38,7 @@ from . import (
 )
 
 
-@ultroid_cmd(pattern="zip( (.*)|$)")
+@ultroid_cmd(pattern="zip( (.*)|$)", category="Tools")
 async def zipp(event):
     reply = await event.get_reply_message()
     t = time.time()
@@ -79,7 +79,7 @@ async def zipp(event):
     await xx.delete()
 
 
-@ultroid_cmd(pattern="unzip( (.*)|$)")
+@ultroid_cmd(pattern="unzip( (.*)|$)", category="Tools")
 async def unzipp(event):
     reply = await event.get_reply_message()
     file = event.pattern_match.group(1).strip()
@@ -119,7 +119,7 @@ async def unzipp(event):
     await xx.delete()
 
 
-@ultroid_cmd(pattern="addzip$")
+@ultroid_cmd(pattern="addzip$", category="Tools")
 async def azipp(event):
     reply = await event.get_reply_message()
     t = time.time()
@@ -148,7 +148,7 @@ async def azipp(event):
     )
 
 
-@ultroid_cmd(pattern="dozip( (.*)|$)")
+@ultroid_cmd(pattern="dozip( (.*)|$)", category="Tools")
 async def do_zip(event):
     if not os.path.isdir("zip"):
         return await event.eor(get_string("zip_2").format(HNDLR))
