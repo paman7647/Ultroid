@@ -1,6 +1,5 @@
 # Ultroid - UserBot
 # Instagram Downloader Plugin
-# Redeveloped and Maintained by Aman Kumar Pandey (https://github.com/paman7647)
 #
 # This file is part of < https://github.com/TeamUltroid/Ultroid/ >
 # Please read the GNU Affero General Public License in
