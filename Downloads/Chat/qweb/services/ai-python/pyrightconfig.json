@@ -1,0 +1,14 @@
+{
+  "include": ["app"],
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "basic",
+  "reportMissingModuleSource": false,
+  "reportMissingTypeStubs": false,
+  "reportGeneralTypeIssues": false,
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "extraPaths": ["."]
+    }
+  ]
+}

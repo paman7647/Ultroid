@@ -1,0 +1,433 @@
+<!-- app/auth/templates/register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Secure Chat</title>
+    <style>
+        /* register.css - Rich, animated styles for register.html */
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: bgMove 12s infinite alternate;
+        }
+        @keyframes bgMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 450px;
+            animation: slideIn 1s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(60px) scale(0.8); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .form-field {
+            margin-bottom: 22px;
+            position: relative;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            box-sizing: border-box;
+            font-size: 1.1em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #ff9a9e;
+            box-shadow: 0 0 25px rgba(255, 154, 158, 0.2);
+            outline: none;
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 1);
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.95em;
+            margin-top: 8px;
+            display: block;
+            font-weight: 500;
+            animation: shake 0.6s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 20px rgba(255, 154, 158, 0.3);
+        }
+        .submit-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(255, 154, 158, 0.4);
+            background: linear-gradient(135deg, #fecfef 0%, #ff9a9e 100%);
+        }
+        .submit-btn:active {
+            transform: translateY(-2px);
+        }
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+        }
+        .flash-messages li {
+            padding: 18px;
+            background: linear-gradient(135deg, #54a0ff, #5f27cd);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            animation: slideDown 0.6s ease-out;
+            font-weight: 500;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .links {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .links a {
+            color: #ff9a9e;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+        .links a:hover {
+            color: #fecfef;
+            text-decoration: underline;
+            transform: scale(1.05);
+        }
+        .generate-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 154, 158, 0.3);
+        }
+        .generate-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 154, 158, 0.4);
+        }
+        .generate-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        .password-strength {
+            margin-top: 5px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        .strength-weak { color: #e74c3c; }
+        .strength-medium { color: #f39c12; }
+        .strength-strong { color: #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>{{ title }}</h1>
+
+        <!-- Block to display flashed messages -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }} <!-- Renders the CSRF token -->
+            <div class="form-field">
+                {{ form.username.label }}<br>
+                <div style="position: relative;">
+                    {{ form.username(size=32) }}
+                    <button type="button" id="generate-username" class="generate-btn" title="Generate random username">🎲</button>
+                </div>
+                {% for error in form.username.errors %}
+                <span class="error-message">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-field">
+                {{ form.display_name.label }}<br>
+                {{ form.display_name(size=32) }}
+                {% for error in form.display_name.errors %}
+                <span class="error-message">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-field">
+                {{ form.password.label }}<br>
+                <div style="position: relative;">
+                    {{ form.password(size=32) }}
+                    <button type="button" id="generate-password" class="generate-btn" title="Generate random password">🎲</button>
+                </div>
+                {% for error in form.password.errors %}
+                <span class="error-message">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-field">
+                {{ form.password2.label }}<br>
+                {{ form.password2(size=32) }}
+                {% for error in form.password2.errors %}
+                <span class="error-message">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-field">
+                {{ form.submit(class="submit-btn") }}
+            </div>
+        </form>
+         <div class="links">
+            <p>Already have an account? <a href="{{ url_for('auth.login') }}">Click to Sign In!</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Random Username and Password Generator
+        class SecureCredentialsGenerator {
+            constructor() {
+                this.adjectives = [
+                    'Secure', 'Crypto', 'Silent', 'Shadow', 'Quantum', 'Cyber', 'Digital', 'Mystic',
+                    'Hidden', 'Ghost', 'Ninja', 'Stealth', 'Phoenix', 'Vortex', 'Matrix', 'Neon',
+                    'Stellar', 'Cosmic', 'Turbo', 'Swift', 'Blaze', 'Storm', 'Thunder', 'Lightning',
+                    'Arctic', 'Crimson', 'Azure', 'Golden', 'Silver', 'Emerald', 'Ruby', 'Sapphire'
+                ];
+                
+                this.nouns = [
+                    'Wolf', 'Eagle', 'Tiger', 'Dragon', 'Phoenix', 'Falcon', 'Panther', 'Shark',
+                    'Viper', 'Raven', 'Hawk', 'Lion', 'Bear', 'Fox', 'Lynx', 'Jaguar',
+                    'Warrior', 'Guardian', 'Hunter', 'Ranger', 'Scout', 'Knight', 'Samurai', 'Ninja',
+                    'Wizard', 'Mage', 'Sorcerer', 'Oracle', 'Sage', 'Prophet', 'Mystic', 'Shaman',
+                    'Cipher', 'Code', 'Key', 'Lock', 'Vault', 'Shield', 'Blade', 'Storm'
+                ];
+                
+                this.setupEventListeners();
+            }
+            
+            generateUsername() {
+                const adjective = this.adjectives[Math.floor(Math.random() * this.adjectives.length)];
+                const noun = this.nouns[Math.floor(Math.random() * this.nouns.length)];
+                const number = Math.floor(Math.random() * 999) + 1;
+                
+                return `${adjective}${noun}${number}`;
+            }
+            
+            generatePassword() {
+                const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+                const numbers = '0123456789';
+                const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+                
+                const allChars = uppercase + lowercase + numbers + symbols;
+                
+                let password = '';
+                
+                // Ensure at least one character from each category
+                password += uppercase[Math.floor(Math.random() * uppercase.length)];
+                password += lowercase[Math.floor(Math.random() * lowercase.length)];
+                password += numbers[Math.floor(Math.random() * numbers.length)];
+                password += symbols[Math.floor(Math.random() * symbols.length)];
+                
+                // Fill the rest randomly
+                for (let i = 4; i < 16; i++) {
+                    password += allChars[Math.floor(Math.random() * allChars.length)];
+                }
+                
+                // Shuffle the password
+                return password.split('').sort(() => Math.random() - 0.5).join('');
+            }
+            
+            checkPasswordStrength(password) {
+                let score = 0;
+                let feedback = '';
+                
+                if (password.length >= 8) score++;
+                if (password.length >= 12) score++;
+                if (/[a-z]/.test(password)) score++;
+                if (/[A-Z]/.test(password)) score++;
+                if (/[0-9]/.test(password)) score++;
+                if (/[^A-Za-z0-9]/.test(password)) score++;
+                
+                if (score < 3) {
+                    feedback = 'Weak password';
+                    return { strength: 'weak', feedback, className: 'strength-weak' };
+                } else if (score < 5) {
+                    feedback = 'Medium strength';
+                    return { strength: 'medium', feedback, className: 'strength-medium' };
+                } else {
+                    feedback = 'Strong password';
+                    return { strength: 'strong', feedback, className: 'strength-strong' };
+                }
+            }
+            
+            updatePasswordStrength() {
+                const passwordField = document.getElementById('password');
+                const strengthIndicator = document.getElementById('password-strength');
+                
+                if (passwordField && strengthIndicator) {
+                    const password = passwordField.value;
+                    if (password) {
+                        const strength = this.checkPasswordStrength(password);
+                        strengthIndicator.textContent = strength.feedback;
+                        strengthIndicator.className = `password-strength ${strength.className}`;
+                        strengthIndicator.style.display = 'block';
+                    } else {
+                        strengthIndicator.style.display = 'none';
+                    }
+                }
+            }
+            
+            setupEventListeners() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Username generator
+                    const generateUsernameBtn = document.getElementById('generate-username');
+                    const usernameField = document.getElementById('username');
+                    const displayNameField = document.getElementById('display_name');
+                    
+                    if (generateUsernameBtn && usernameField) {
+                        generateUsernameBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const username = this.generateUsername();
+                            usernameField.value = username;
+                            
+                            // Auto-fill display name if empty
+                            if (displayNameField && !displayNameField.value) {
+                                displayNameField.value = username.replace(/[0-9]/g, '');
+                            }
+                            
+                            // Add animation
+                            usernameField.style.transform = 'scale(1.05)';
+                            usernameField.style.borderColor = '#ff9a9e';
+                            setTimeout(() => {
+                                usernameField.style.transform = 'scale(1)';
+                                usernameField.style.borderColor = '#f0f0f0';
+                            }, 200);
+                        });
+                    }
+                    
+                    // Password generator
+                    const generatePasswordBtn = document.getElementById('generate-password');
+                    const passwordField = document.getElementById('password');
+                    const password2Field = document.getElementById('password2');
+                    
+                    if (generatePasswordBtn && passwordField) {
+                        generatePasswordBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const password = this.generatePassword();
+                            passwordField.value = password;
+                            
+                            // Auto-fill confirm password
+                            if (password2Field) {
+                                password2Field.value = password;
+                            }
+                            
+                            // Update strength indicator
+                            this.updatePasswordStrength();
+                            
+                            // Add animation
+                            passwordField.style.transform = 'scale(1.05)';
+                            passwordField.style.borderColor = '#ff9a9e';
+                            setTimeout(() => {
+                                passwordField.style.transform = 'scale(1)';
+                                passwordField.style.borderColor = '#f0f0f0';
+                            }, 200);
+                        });
+                    }
+                    
+                    // Add password strength indicator
+                    if (passwordField) {
+                        const strengthDiv = document.createElement('div');
+                        strengthDiv.id = 'password-strength';
+                        strengthDiv.className = 'password-strength';
+                        strengthDiv.style.display = 'none';
+                        passwordField.parentNode.appendChild(strengthDiv);
+                        
+                        // Monitor password changes
+                        passwordField.addEventListener('input', () => {
+                            this.updatePasswordStrength();
+                        });
+                    }
+                    
+                    // Show/hide password toggle
+                    const togglePasswordBtn = document.createElement('button');
+                    togglePasswordBtn.type = 'button';
+                    togglePasswordBtn.innerHTML = '👁️';
+                    togglePasswordBtn.className = 'generate-btn';
+                    togglePasswordBtn.style.right = '50px';
+                    togglePasswordBtn.title = 'Toggle password visibility';
+                    
+                    if (passwordField) {
+                        passwordField.parentNode.style.position = 'relative';
+                        passwordField.parentNode.appendChild(togglePasswordBtn);
+                        
+                        togglePasswordBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const type = passwordField.type === 'password' ? 'text' : 'password';
+                            passwordField.type = type;
+                            password2Field.type = type;
+                            togglePasswordBtn.innerHTML = type === 'password' ? '👁️' : '🙈';
+                        });
+                    }
+                });
+            }
+        }
+        
+        // Initialize the generator
+        new SecureCredentialsGenerator();
+    </script>
+</body>
+</html>

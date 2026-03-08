@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── QWeb Design System: Futuristic Digital Canvas ─── */
+
+:root {
+  --background: 220 20% 97%;
+  --foreground: 220 25% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 25% 10%;
+  --primary: 230 80% 56%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 260 60% 58%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 170 70% 45%;
+  --accent-foreground: 0 0% 100%;
+  --muted: 220 15% 93%;
+  --muted-foreground: 220 10% 45%;
+  --border: 220 15% 88%;
+  --ring: 230 80% 56%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 142 72% 40%;
+  --warning: 38 92% 50%;
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
+
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: 20px;
+
+  --glow-primary: 0 0 20px hsla(230, 80%, 56%, 0.2);
+  --glow-accent: 0 0 20px hsla(170, 70%, 45%, 0.2);
+  --glow-online: 0 0 8px hsla(142, 72%, 40%, 0.5);
+
+  --sidebar-width: 320px;
+  --context-width: 340px;
+
+  --shadow-soft: 0 2px 12px -4px rgba(0, 0, 0, 0.08);
+  --shadow-float: 0 8px 32px -8px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 4px 24px -6px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  --background: 228 20% 8%;
+  --foreground: 220 20% 92%;
+  --card: 228 18% 12%;
+  --card-foreground: 220 20% 92%;
+  --primary: 230 85% 65%;
+  --primary-foreground: 228 20% 8%;
+  --secondary: 260 65% 65%;
+  --secondary-foreground: 228 20% 8%;
+  --accent: 170 75% 50%;
+  --accent-foreground: 228 20% 8%;
+  --muted: 228 15% 16%;
+  --muted-foreground: 220 12% 58%;
+  --border: 228 15% 20%;
+  --ring: 230 85% 65%;
+  --destructive: 0 72% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 142 72% 45%;
+  --warning: 38 92% 55%;
+
+  --glass-bg: rgba(18, 22, 36, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-blur: 24px;
+
+  --glow-primary: 0 0 24px hsla(230, 85%, 65%, 0.15);
+  --glow-accent: 0 0 24px hsla(170, 75%, 50%, 0.15);
+  --glow-online: 0 0 10px hsla(142, 72%, 45%, 0.4);
+
+  --shadow-soft: 0 2px 12px -4px rgba(0, 0, 0, 0.3);
+  --shadow-float: 0 8px 32px -8px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 4px 24px -6px rgba(0, 0, 0, 0.3);
+}
+
+/* Neon accent theme */
+.theme-neon {
+  --primary: 280 100% 60%;
+  --secondary: 320 90% 55%;
+  --accent: 160 100% 50%;
+  --glow-primary: 0 0 30px hsla(280, 100%, 60%, 0.25);
+  --glow-accent: 0 0 30px hsla(160, 100%, 50%, 0.25);
+}
+
+* {
+  @apply border-border;
+}
+
+html,
+body {
+  @apply bg-background text-foreground antialiased;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+a {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm;
+}
+
+/* ─── Glass morphism utilities ─── */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-heavy {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(32px) saturate(1.2);
+  backdrop-filter: blur(32px) saturate(1.2);
+  border: 1px solid var(--glass-border);
+}
+
+/* ─── Glow utilities ─── */
+.glow-primary { box-shadow: var(--glow-primary); }
+.glow-accent { box-shadow: var(--glow-accent); }
+.glow-online { box-shadow: var(--glow-online); }
+
+/* ─── Gradient backgrounds ─── */
+.gradient-bg {
+  background: radial-gradient(ellipse at top right, hsla(230, 80%, 56%, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom left, hsla(170, 70%, 45%, 0.06), transparent 40%),
+    hsl(var(--background));
+}
+
+.gradient-surface {
+  background: linear-gradient(135deg, hsla(230, 80%, 56%, 0.03), hsla(260, 60%, 58%, 0.03));
+}
+
+/* ─── Custom scrollbar ─── */
+@supports (scrollbar-width: thin) {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* ─── Animation keyframes ─── */
+@keyframes message-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 4px hsla(142, 72%, 40%, 0.3); }
+  50% { box-shadow: 0 0 12px hsla(142, 72%, 40%, 0.6); }
+}
+
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
+}
+
+.animate-message-in {
+  animation: message-in 0.25s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.25s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ─── Focus ring ─── */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: hsla(230, 80%, 56%, 0.2);
+}

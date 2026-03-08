@@ -1,0 +1,276 @@
+/* Chat UI styles */
+.chat-container {
+    display: flex;
+    height: 90vh;
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+.contacts-list {
+    width: 220px;
+    background: #f7f7f7;
+    border-right: 1px solid #eee;
+    padding: 20px 0;
+}
+.contacts-list h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+.contacts-list ul {
+    list-style: none;
+    padding: 0;
+}
+.contacts-list li {
+    padding: 12px 24px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+.contacts-list li:hover, .contacts-list li.active {
+    background: #e9ecef;
+}
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid #eee;
+    background: #f7f7f7;
+}
+.encryption-status {
+    color: #28a745;
+    font-size: 1.1em;
+}
+.chat-messages {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    background: #fafafa;
+}
+.message {
+    margin-bottom: 18px;
+    padding: 12px 18px;
+    border-radius: 6px;
+    max-width: 70%;
+    word-break: break-word;
+    position: relative;
+    background: #e2f0cb;
+    color: #333;
+    align-self: flex-start;
+}
+.message.sent {
+    background: #cce5ff;
+    align-self: flex-end;
+}
+.message.disappearing {
+    opacity: 0.7;
+    animation: fadeout 1s linear forwards;
+}
+@keyframes fadeout {
+    to { opacity: 0; height: 0; margin: 0; padding: 0; }
+}
+.chat-input {
+    padding: 18px 24px;
+    border-top: 1px solid #eee;
+    background: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+}
+#message-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+.chat-input button {
+    padding: 10px 18px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    align-self: flex-end;
+}
+.chat-input button:hover {
+    background: #218838;
+}
+.disappearing-info {
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 6px;
+    text-align: right;
+}
+
+/* Animated form container for register/login/index */
+.form-container {
+    background: linear-gradient(135deg, #f7f7f7 60%, #e3e3e3 100%);
+    box-shadow: 0 8px 32px rgba(60,60,120,0.18);
+    border-radius: 18px;
+    animation: fadeInForm 1s;
+}
+@keyframes fadeInForm {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: none; }
+}
+.flash-messages li {
+    animation: flashIn 0.7s;
+}
+@keyframes flashIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+input[type="text"], input[type="password"] {
+    transition: border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+input[type="text"]:focus, input[type="password"]:focus {
+    border: 2px solid #007bff;
+    box-shadow: 0 4px 16px rgba(0,123,255,0.08);
+    outline: none;
+}
+.submit-btn {
+    background: linear-gradient(135deg, #28a745 60%, #218838 100%);
+    box-shadow: 0 2px 8px rgba(40,167,69,0.08);
+    transition: background 0.2s, transform 0.2s;
+}
+.submit-btn:hover {
+    background: linear-gradient(135deg, #218838 60%, #28a745 100%);
+    transform: scale(1.05);
+}
+.links a {
+    transition: color 0.2s;
+}
+.links a:hover {
+    color: #0056b3;
+}
+/* Global styles for Secure Chat Application */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Flash messages */
+.flash-messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.flash-message {
+    background: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.flash-message.error {
+    background: #f44336;
+}
+
+.flash-message.warning {
+    background: #ff9800;
+}
+
+.flash-message.info {
+    background: #2196F3;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Global button styles */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 120px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .flash-messages {
+        left: 20px;
+        right: 20px;
+        top: 10px;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

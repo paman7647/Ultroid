@@ -1,0 +1,338 @@
+<!-- app/auth/templates/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Secure Chat</title>
+    <style>
+        /* login.css - Rich, animated styles for login.html */
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: bgMove 15s infinite alternate;
+        }
+        @keyframes bgMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 420px;
+            animation: slideIn 0.8s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 300;
+        }
+        .form-field {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.15);
+            outline: none;
+            transform: translateY(-2px);
+        }
+        .checkbox-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-field input[type="checkbox"] {
+            width: auto;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+        }
+        .flash-messages li {
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            animation: slideDown 0.5s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .links {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .links a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .generate-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        .generate-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .generate-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        .demo-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.95em;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>{{ title }}</h1>
+
+        <!-- Block to display flashed messages -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }} <!-- Renders the CSRF token -->
+            <div class="form-field">
+                {{ form.username.label }}<br>
+                <div style="position: relative;">
+                    {{ form.username(size=32) }}
+                    <button type="button" id="demo-credentials" class="generate-btn" title="Use demo credentials">🎭</button>
+                </div>
+                {% for error in form.username.errors %}
+                <span class="error-message">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-field">
+                {{ form.password.label }}<br>
+                <div style="position: relative;">
+                    {{ form.password(size=32) }}
+                    <button type="button" id="toggle-password" class="generate-btn" title="Toggle password visibility">👁️</button>
+                </div>
+                {% for error in form.password.errors %}
+                <span class="error-message">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-field">
+                {{ form.remember_me() }} {{ form.remember_me.label }}
+            </div>
+            <div class="form-field">
+                {{ form.submit(class="submit-btn") }}
+            </div>
+        </form>
+        <div class="links">
+            <p>New User? <a href="{{ url_for('auth.register') }}">Click to Register!</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Demo credentials and login enhancements
+        class LoginEnhancer {
+            constructor() {
+                this.demoCredentials = [
+                    { username: 'SecureUser123', password: 'demo123' },
+                    { username: 'CryptoNinja456', password: 'demo456' },
+                    { username: 'QuantumWolf789', password: 'demo789' },
+                    { username: 'ShadowHunter101', password: 'demo101' },
+                    { username: 'DigitalPhoenix202', password: 'demo202' }
+                ];
+                
+                this.setupEventListeners();
+            }
+            
+            getRandomDemo() {
+                return this.demoCredentials[Math.floor(Math.random() * this.demoCredentials.length)];
+            }
+            
+            setupEventListeners() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Demo credentials button
+                    const demoBtn = document.getElementById('demo-credentials');
+                    const usernameField = document.getElementById('username');
+                    const passwordField = document.getElementById('password');
+                    
+                    if (demoBtn && usernameField && passwordField) {
+                        demoBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const demo = this.getRandomDemo();
+                            
+                            usernameField.value = demo.username;
+                            passwordField.value = demo.password;
+                            
+                            // Add animation
+                            usernameField.style.transform = 'scale(1.05)';
+                            passwordField.style.transform = 'scale(1.05)';
+                            usernameField.style.borderColor = '#667eea';
+                            passwordField.style.borderColor = '#667eea';
+                            
+                            setTimeout(() => {
+                                usernameField.style.transform = 'scale(1)';
+                                passwordField.style.transform = 'scale(1)';
+                                usernameField.style.borderColor = '#e1e8ed';
+                                passwordField.style.borderColor = '#e1e8ed';
+                            }, 300);
+                            
+                            // Show demo info
+                            this.showDemoInfo();
+                        });
+                    }
+                    
+                    // Password visibility toggle
+                    const toggleBtn = document.getElementById('toggle-password');
+                    if (toggleBtn && passwordField) {
+                        toggleBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const type = passwordField.type === 'password' ? 'text' : 'password';
+                            passwordField.type = type;
+                            toggleBtn.innerHTML = type === 'password' ? '👁️' : '🙈';
+                        });
+                    }
+                    
+                    // Add demo info initially
+                    this.addDemoInfo();
+                });
+            }
+            
+            addDemoInfo() {
+                const form = document.querySelector('form');
+                if (form) {
+                    const demoInfo = document.createElement('div');
+                    demoInfo.className = 'demo-info';
+                    demoInfo.id = 'demo-info';
+                    demoInfo.innerHTML = `
+                        <strong>🎭 Demo Mode Available</strong><br>
+                        Click the 🎭 button to use random demo credentials for testing
+                    `;
+                    
+                    form.insertBefore(demoInfo, form.firstChild);
+                }
+            }
+            
+            showDemoInfo() {
+                const demoInfo = document.getElementById('demo-info');
+                if (demoInfo) {
+                    demoInfo.innerHTML = `
+                        <strong>✅ Demo Credentials Loaded</strong><br>
+                        Username and password filled automatically for testing
+                    `;
+                    demoInfo.style.background = 'rgba(39, 174, 96, 0.1)';
+                    demoInfo.style.borderColor = 'rgba(39, 174, 96, 0.3)';
+                    demoInfo.style.color = '#27ae60';
+                    
+                    setTimeout(() => {
+                        demoInfo.style.background = 'rgba(102, 126, 234, 0.1)';
+                        demoInfo.style.borderColor = 'rgba(102, 126, 234, 0.3)';
+                        demoInfo.style.color = '#667eea';
+                        demoInfo.innerHTML = `
+                            <strong>🎭 Demo Mode Available</strong><br>
+                            Click the 🎭 button to use random demo credentials for testing
+                        `;
+                    }, 3000);
+                }
+            }
+        }
+        
+        // Initialize the enhancer
+        new LoginEnhancer();
+    </script>
+</body>
+</html>

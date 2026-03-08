@@ -1,0 +1,845 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum GlobalRole {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum RoomType {
+  DM
+  GROUP
+}
+
+enum MembershipRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum MessageKind {
+  TEXT
+  SYSTEM
+  IMAGE
+  FILE
+  VIDEO
+  AUDIO
+  VOICE
+  STICKER
+  GIF
+  EMOJI
+}
+
+enum AttachmentScanStatus {
+  PENDING
+  CLEAN
+  INFECTED
+  FAILED
+}
+
+enum SessionStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum AuditSeverity {
+  INFO
+  WARN
+  ERROR
+  SECURITY
+}
+
+enum JoinRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id            String   @id @default(uuid())
+  username      String   @unique
+  email         String   @unique
+  displayName   String
+  passwordHash  String
+  avatarUrl     String?
+  bio           String?
+  statusMessage String?
+  lastSeenAt    DateTime?
+  hideLastSeen  Boolean    @default(false)
+  hideProfilePhoto Boolean @default(false)
+  role          GlobalRole @default(USER)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deletedAt     DateTime?
+
+  // OAuth fields
+  googleId      String?  @unique
+  authProvider  String   @default("local") // "local" | "google"
+
+  // Bot fields
+  isBot           Boolean  @default(false)
+  botOwnerId      String?
+  botPermissions  String[] @default([])
+  botWebhookUrl   String?
+  botPublic       Boolean  @default(false)
+  botDescription  String?
+
+  botOwner        User?    @relation("BotOwner", fields: [botOwnerId], references: [id], onDelete: SetNull)
+  ownedBots       User[]   @relation("BotOwner")
+  botTokens       BotToken[]
+  botCommands     BotCommand[]
+  botPlugins      BotPlugin[]
+  botReviewsGiven BotReview[] @relation("BotReviewer")
+  botInstallations BotInstallation[]
+  voiceStreams    VoiceStream[]
+
+  memberships   RoomMembership[]
+  sentMessages  Message[] @relation("MessageSender")
+  readReceipts  MessageReadReceipt[]
+  sessions      Session[]
+  refreshTokens RefreshToken[]
+  devices       Device[]
+  auditLogs     AuditLog[] @relation("AuditActor")
+  roomsCreated  Room[] @relation("RoomCreator")
+  uploads       Attachment[] @relation("AttachmentUploader")
+  blockedUsers  UserBlock[] @relation("Blocker")
+  blockedByUsers UserBlock[] @relation("Blocked")
+  contactsOwned UserContact[] @relation("ContactOwner")
+  contactsOf    UserContact[] @relation("ContactUser")
+  reactions     MessageReaction[]
+  chatStates    UserChatState[]
+  starredMessages StarredMessage[]
+  hiddenMessages MessageHidden[]
+  deliveryReceipts MessageDeliveryReceipt[]
+  createdInvites RoomInvite[] @relation("RoomInviteCreator")
+
+  // Call relations
+  initiatedCalls  Call[] @relation("CallInitiator")
+  callParticipations CallParticipant[]
+
+  // Voice room relations
+  createdVoiceRooms VoiceRoom[] @relation("VoiceRoomCreator")
+  voiceRoomMemberships VoiceRoomMember[]
+
+  // Encryption key relations
+  encryptionKeys EncryptionKey[]
+  initiatedSessions EncryptionSession[] @relation("SessionInitiator")
+  receivedSessions  EncryptionSession[] @relation("SessionResponder")
+
+  @@index([isBot, botPublic])
+  @@index([botOwnerId])
+}
+
+model Room {
+  id            String   @id @default(uuid())
+  type          RoomType
+  name          String?
+  description   String?
+  avatarUrl     String?
+  createdById   String
+  announcementMode Boolean @default(false)
+  slowModeSeconds Int @default(0)
+  isArchived    Boolean  @default(false)
+  lastMessageAt DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  createdBy     User     @relation("RoomCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  memberships   RoomMembership[]
+  messages      Message[]
+  invites       RoomInvite[]
+  chatStates    UserChatState[]
+  calls         Call[]
+  voiceRooms    VoiceRoom[]
+  threads       MessageThread[]
+
+  @@index([createdById])
+  @@index([lastMessageAt])
+  @@index([type])
+}
+
+model RoomMembership {
+  id            String   @id @default(uuid())
+  roomId        String
+  userId        String
+  role          MembershipRole @default(MEMBER)
+  canPost       Boolean @default(true)
+  joinedAt      DateTime @default(now())
+  mutedUntil    DateTime?
+
+  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id            String   @id @default(uuid())
+  roomId        String
+  senderId      String
+  kind          MessageKind @default(TEXT)
+  body          String?
+  bodyJson      Json?
+  replyToId     String?
+  forwardedFromId String?
+  clientMsgId   String?
+  createdAt     DateTime @default(now())
+  editedAt      DateTime?
+  deletedAt     DateTime?
+
+  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender        User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Restrict)
+  attachments   Attachment[]
+  readReceipts  MessageReadReceipt[]
+  reactions     MessageReaction[]
+  forwardedFrom Message? @relation("ForwardChain", fields: [forwardedFromId], references: [id], onDelete: SetNull)
+  forwards      Message[] @relation("ForwardChain")
+  starredByUsers StarredMessage[]
+  hiddenForUsers MessageHidden[]
+  deliveryReceipts MessageDeliveryReceipt[]
+  thread         MessageThread? @relation("ThreadRoot")
+
+  @@index([roomId, createdAt])
+  @@index([senderId, createdAt])
+  @@index([roomId, senderId])
+  @@index([replyToId])
+  @@index([forwardedFromId])
+}
+
+model Attachment {
+  id            String   @id @default(uuid())
+  messageId     String?
+  uploadedById  String
+  objectKey     String   @unique
+  bucket        String
+  mimeType      String
+  sizeBytes     BigInt
+  sha256        String
+  scanStatus    AttachmentScanStatus @default(PENDING)
+  scannedAt     DateTime?
+  quarantinedAt DateTime?
+  createdAt     DateTime @default(now())
+
+  message       Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  uploadedBy    User     @relation("AttachmentUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([scanStatus, createdAt])
+}
+
+model MessageReadReceipt {
+  id            String   @id @default(uuid())
+  messageId     String
+  userId        String
+  readAt        DateTime @default(now())
+
+  message       Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+}
+
+model MessageDeliveryReceipt {
+  id            String   @id @default(uuid())
+  messageId     String
+  userId        String
+  deliveredAt   DateTime @default(now())
+
+  message       Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+  @@index([userId, deliveredAt])
+}
+
+model Session {
+  id            String   @id @default(uuid())
+  userId        String
+  status        SessionStatus @default(ACTIVE)
+  ip            String?
+  userAgent     String?
+  createdAt     DateTime @default(now())
+  lastSeenAt    DateTime @default(now())
+  revokedAt     DateTime?
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+model RefreshToken {
+  id            String   @id @default(uuid())
+  userId        String
+  deviceId      String?
+  tokenHash     String   @unique
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  revokedAt     DateTime?
+  replacedById  String?
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device        Device?  @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+
+  @@index([userId, expiresAt])
+}
+
+model Device {
+  id             String   @id @default(uuid())
+  userId         String
+  name           String
+  platform       String
+  fingerprintHash String
+  lastSeenAt     DateTime @default(now())
+  createdAt      DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokens  RefreshToken[]
+  encryptionKeys EncryptionKey[]
+
+  @@index([userId, lastSeenAt])
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  actorUserId   String?
+  action        String
+  entityType    String
+  entityId      String?
+  severity      AuditSeverity @default(INFO)
+  ip            String?
+  userAgent     String?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  actor         User?    @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([action, createdAt])
+  @@index([actorUserId])
+  @@index([entityType, entityId])
+}
+
+model UserBlock {
+  id        String   @id @default(uuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@index([blockedId])
+}
+
+model UserChatState {
+  id          String   @id @default(uuid())
+  userId      String
+  roomId      String
+  isArchived  Boolean  @default(false)
+  isPinned    Boolean  @default(false)
+  pinOrder    Int?
+  mutedUntil  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roomId])
+  @@index([userId, isPinned, isArchived])
+}
+
+model StarredMessage {
+  id          String   @id @default(uuid())
+  userId      String
+  messageId   String
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message     Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, messageId])
+  @@index([userId, createdAt])
+}
+
+model MessageHidden {
+  id          String   @id @default(uuid())
+  userId      String
+  messageId   String
+  hiddenAt    DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message     Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, messageId])
+  @@index([userId, hiddenAt])
+}
+
+model RoomInvite {
+  id          String   @id @default(uuid())
+  roomId      String
+  code        String   @unique
+  createdById String
+  expiresAt   DateTime?
+  maxUses     Int?
+  uses        Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  room        Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  createdBy   User     @relation("RoomInviteCreator", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([roomId, createdAt])
+}
+
+model UserContact {
+  id            String   @id @default(uuid())
+  ownerId       String
+  contactUserId String
+  alias         String?
+  note          String?
+  isFavorite    Boolean  @default(false)
+  isMuted       Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  owner         User     @relation("ContactOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  contact       User     @relation("ContactUser", fields: [contactUserId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, contactUserId])
+  @@index([ownerId, isFavorite])
+  @@index([contactUserId])
+}
+
+model MessageReaction {
+  id         String   @id @default(uuid())
+  messageId  String
+  userId     String
+  emoji      String
+  createdAt  DateTime @default(now())
+
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+  @@index([messageId, createdAt])
+}
+
+// ──────────────────────────────────────────────
+// CALL SYSTEM
+// ──────────────────────────────────────────────
+
+enum CallType {
+  VOICE
+  VIDEO
+  SCREEN_SHARE
+}
+
+enum CallStatus {
+  RINGING
+  ACTIVE
+  ENDED
+  MISSED
+  REJECTED
+  FAILED
+}
+
+model Call {
+  id           String     @id @default(uuid())
+  roomId       String
+  initiatorId  String
+  type         CallType
+  status       CallStatus @default(RINGING)
+  isGroup      Boolean    @default(false)
+  startedAt    DateTime?
+  endedAt      DateTime?
+  duration     Int?       // seconds
+  maxParticipants Int     @default(50)
+  metadata     Json?      // codec info, quality stats
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  room         Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  initiator    User       @relation("CallInitiator", fields: [initiatorId], references: [id], onDelete: Restrict)
+  participants CallParticipant[]
+
+  @@index([roomId, createdAt])
+  @@index([initiatorId, status])
+  @@index([status, createdAt])
+}
+
+enum ParticipantStatus {
+  RINGING
+  JOINED
+  LEFT
+  REJECTED
+  MISSED
+}
+
+model CallParticipant {
+  id             String            @id @default(uuid())
+  callId         String
+  userId         String
+  status         ParticipantStatus @default(RINGING)
+  joinedAt       DateTime?
+  leftAt         DateTime?
+  isMuted        Boolean           @default(false)
+  isVideoOff     Boolean           @default(false)
+  isScreenSharing Boolean          @default(false)
+  isHandRaised   Boolean           @default(false)
+  createdAt      DateTime          @default(now())
+
+  call           Call              @relation(fields: [callId], references: [id], onDelete: Cascade)
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([callId, userId])
+  @@index([userId, createdAt])
+}
+
+// ──────────────────────────────────────────────
+// VOICE CHAT ROOMS (Discord-style)
+// ──────────────────────────────────────────────
+
+enum VoiceRoomType {
+  PUBLIC
+  PRIVATE
+  GROUP_CHANNEL
+}
+
+model VoiceRoom {
+  id              String        @id @default(uuid())
+  name            String
+  description     String?
+  type            VoiceRoomType @default(PUBLIC)
+  roomId          String?       // optional link to a chat Room
+  createdById     String
+  maxParticipants Int           @default(50)
+  isPersistent    Boolean       @default(true)
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  createdBy       User          @relation("VoiceRoomCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  chatRoom        Room?         @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  members         VoiceRoomMember[]
+
+  @@index([type, isActive])
+  @@index([roomId])
+  @@index([createdById])
+}
+
+model VoiceRoomMember {
+  id              String    @id @default(uuid())
+  voiceRoomId     String
+  userId          String
+  isMuted         Boolean   @default(false)
+  isDeafened      Boolean   @default(false)
+  isSpeaking      Boolean   @default(false)
+  pushToTalk      Boolean   @default(false)
+  joinedAt        DateTime  @default(now())
+
+  voiceRoom       VoiceRoom @relation(fields: [voiceRoomId], references: [id], onDelete: Cascade)
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([voiceRoomId, userId])
+  @@index([userId])
+}
+
+// ──────────────────────────────────────────────
+// END-TO-END ENCRYPTION
+// ──────────────────────────────────────────────
+
+enum KeyAlgorithm {
+  X25519
+  RSA_OAEP_4096
+  P256_ECDH
+  ED25519
+}
+
+model EncryptionKey {
+  id           String       @id @default(uuid())
+  userId       String
+  deviceId     String?
+  algorithm    KeyAlgorithm
+  publicKey    String       // base64-encoded public key
+  isIdentity   Boolean      @default(false) // identity key vs pre-key
+  isOneTime    Boolean      @default(false) // one-time pre-key
+  isUsed       Boolean      @default(false) // for one-time keys
+  signature    String?      // signing key signature
+  createdAt    DateTime     @default(now())
+  expiresAt    DateTime?
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device       Device?      @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+
+  @@index([userId, algorithm, isUsed])
+  @@index([userId, deviceId])
+  @@index([userId, isIdentity])
+}
+
+model EncryptionSession {
+  id               String   @id @default(uuid())
+  initiatorUserId  String
+  responderUserId  String
+  initiatorDeviceId String?
+  responderDeviceId String?
+  sessionData      String   // encrypted session state (base64)
+  rootKey          String?  // encrypted root key for double ratchet
+  chainIndex       Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  initiator        User     @relation("SessionInitiator", fields: [initiatorUserId], references: [id], onDelete: Cascade)
+  responder        User     @relation("SessionResponder", fields: [responderUserId], references: [id], onDelete: Cascade)
+
+  @@unique([initiatorUserId, responderUserId, initiatorDeviceId, responderDeviceId])
+  @@index([responderUserId])
+}
+
+// ──────────────────────────────────────────────
+// MEDIA SESSIONS (SFU tracking)
+// ──────────────────────────────────────────────
+
+enum MediaSessionStatus {
+  ACTIVE
+  ENDED
+  FAILED
+}
+
+model MediaSession {
+  id           String             @id @default(uuid())
+  callId       String?
+  voiceRoomId  String?
+  sfuSessionId String?            // LiveKit/mediasoup session reference
+  status       MediaSessionStatus @default(ACTIVE)
+  codec        String?            // opus, vp8, vp9, h264
+  bitrate      Int?               // kbps
+  metadata     Json?
+  startedAt    DateTime           @default(now())
+  endedAt      DateTime?
+
+  @@index([callId])
+  @@index([voiceRoomId])
+  @@index([status])
+}
+
+// ──────────────────────────────────────────────
+// MESSAGE THREADS
+// ──────────────────────────────────────────────
+
+model MessageThread {
+  id             String   @id @default(uuid())
+  roomId         String
+  rootMessageId  String   @unique
+  lastReplyAt    DateTime?
+  replyCount     Int      @default(0)
+  participantIds String[] // user IDs who participated
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  room           Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  rootMessage    Message  @relation("ThreadRoot", fields: [rootMessageId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, lastReplyAt])
+}
+
+// ──────────────────────────────────────────────
+// BOT SYSTEM
+// ──────────────────────────────────────────────
+
+enum BotCategory {
+  MODERATION
+  MUSIC
+  GAME
+  UTILITY
+  AI
+  AUTOMATION
+  OTHER
+}
+
+enum BotReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model BotToken {
+  id        String   @id @default(uuid())
+  botId     String
+  tokenHash String   @unique
+  name      String   @default("default")
+  scopes    String[] @default([])
+  lastUsedAt DateTime?
+  expiresAt DateTime?
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+
+  bot       User     @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@index([botId])
+  @@index([tokenHash])
+}
+
+model BotCommand {
+  id          String   @id @default(uuid())
+  botId       String
+  name        String   // e.g. "play", "help"
+  description String?
+  usage       String?  // e.g. "/play <song>"
+  arguments   Json?    // argument definitions
+  permissions String[] @default([])
+  isEnabled   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bot         User     @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@unique([botId, name])
+  @@index([botId, isEnabled])
+}
+
+model BotPlugin {
+  id          String   @id @default(uuid())
+  botId       String
+  name        String
+  version     String   @default("1.0.0")
+  description String?
+  config      Json?    // plugin-specific config
+  commands    String[] @default([]) // registered command names
+  events      String[] @default([]) // subscribed event names
+  permissions String[] @default([])
+  isEnabled   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bot         User     @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@unique([botId, name])
+  @@index([botId, isEnabled])
+}
+
+model BotMarketplaceListing {
+  id           String          @id @default(uuid())
+  botId        String          @unique
+  category     BotCategory     @default(OTHER)
+  tags         String[]        @default([])
+  shortDescription String?
+  longDescription  String?
+  iconUrl      String?
+  bannerUrl    String?
+  websiteUrl   String?
+  sourceUrl    String?
+  reviewStatus BotReviewStatus @default(PENDING)
+  reviewerNote String?
+  installCount Int             @default(0)
+  isListed     Boolean         @default(false)
+  publishedAt  DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  reviews      BotReview[]
+  installations BotInstallation[]
+
+  @@index([category, isListed])
+  @@index([reviewStatus])
+  @@index([installCount])
+}
+
+model BotReview {
+  id          String   @id @default(uuid())
+  listingId   String
+  userId      String
+  rating      Int      // 1-5
+  comment     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  listing     BotMarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user        User     @relation("BotReviewer", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, userId])
+  @@index([listingId, rating])
+}
+
+model BotInstallation {
+  id          String   @id @default(uuid())
+  listingId   String
+  userId      String
+  roomId      String?  // installed in a specific room
+  permissions String[] @default([])
+  installedAt DateTime @default(now())
+
+  listing     BotMarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, userId, roomId])
+  @@index([userId])
+  @@index([roomId])
+}
+
+// ──────────────────────────────────────────────
+// VOICE STREAMING (for bots)
+// ──────────────────────────────────────────────
+
+enum VoiceStreamStatus {
+  BUFFERING
+  PLAYING
+  PAUSED
+  STOPPED
+  ERROR
+}
+
+enum VoiceStreamSource {
+  FILE
+  URL
+  GENERATED
+}
+
+model VoiceStream {
+  id           String            @id @default(uuid())
+  botId        String
+  voiceRoomId  String
+  source       VoiceStreamSource @default(FILE)
+  sourceUrl    String?           // file path or stream URL
+  status       VoiceStreamStatus @default(BUFFERING)
+  volume       Int               @default(100) // 0-200
+  position     Int               @default(0)   // current playback position in ms
+  duration     Int?              // total duration in ms
+  codec        String            @default("opus")
+  bitrate      Int               @default(128) // kbps
+  metadata     Json?             // track info: title, artist, etc.
+  startedAt    DateTime?
+  endedAt      DateTime?
+  createdAt    DateTime          @default(now())
+
+  bot          User              @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@index([botId, status])
+  @@index([voiceRoomId])
+}
+
+// ──────────────────────────────────────────────
+// MUSIC QUEUE (for music bots)
+// ──────────────────────────────────────────────
+
+model MusicQueueItem {
+  id           String   @id @default(uuid())
+  voiceRoomId  String
+  botId        String
+  title        String
+  artist       String?
+  sourceUrl    String
+  duration     Int?     // ms
+  requestedById String
+  position     Int      @default(0) // queue position
+  createdAt    DateTime @default(now())
+
+  @@index([voiceRoomId, botId, position])
+}

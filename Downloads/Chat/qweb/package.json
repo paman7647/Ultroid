@@ -1,0 +1,37 @@
+{
+  "name": "qweb",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "dotenv -e .env -- concurrently \"npm run dev --workspace @qweb/api\" \"npm run dev --workspace @qweb/web\" \"npm run dev --workspace @qweb/worker\"",
+    "dev:backend": "dotenv -e .env -- concurrently \"npm run dev --workspace @qweb/api\" \"npm run dev --workspace @qweb/worker\" \"npm run dev --workspace @qweb/signaling\"",
+    "dev:signaling": "dotenv -e .env -- npm run dev --workspace @qweb/signaling",
+    "dev:ai": "cd services/ai-python && uvicorn app.main:app --reload --port 8000",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "npm run prisma:generate --workspace @qweb/api",
+    "db:migrate": "dotenv -e .env -- npm run prisma:migrate --workspace @qweb/api"
+  },
+  "devDependencies": {
+    "@swc-node/register": "^1.11.1",
+    "@swc/core": "^1.15.18",
+    "@types/node": "^24.3.0",
+    "concurrently": "^9.2.1",
+    "dotenv-cli": "^11.0.0",
+    "eslint": "^9.34.0",
+    "prettier": "^3.6.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}

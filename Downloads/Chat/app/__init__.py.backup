@@ -1,0 +1,347 @@
+import os
+import logging
+import sqlite3
+import click
+from flask import Flask, request, session
+from flask_login import LoginManager, current_user
+from flask_socketio import SocketIO
+from datetime import datetime, timedelta
+                    ('SUSPICIOUS_REQUEST', client_ip, user_agent, 
+                     'Suspicious user agent detected', 'medium', 1)
+                )
+                db_conn.commit()
+                db_conn.close()
+            except sqlite3.OperationalError as e:
+                if "database is locked" in str(e):
+                    app.logger.warning(f"Security logging skipped - database locked")
+                else:
+                    app.logger.error(f"Failed to log security event: {e}")
+            except Exception as e:
+                app.logger.error(f"Failed to log security event: {e}")io import SocketIO
+from flask_wtf.csrf import CSRFProtect
+from config import Config
+from datetime import datetime, timedelta
+
+# Instantiate extensions
+login_manager = LoginManager()
+socketio = SocketIO(async_mode='eventlet', cors_allowed_origins="*")
+csrf = CSRFProtect()
+
+# Configure the login manager with enhanced security
+login_manager.login_view = 'auth.login'
+login_manager.login_message = 'Please log in to access this page.'
+login_manager.login_message_category = 'info'
+login_manager.session_protection = 'strong'  # Enhanced session protection
+login_manager.refresh_view = 'auth.login'
+login_manager.needs_refresh_message = 'Please re-authenticate to continue.'
+
+def create_app(config_class=Config):
+    """Creates and configures the Flask application instance with enhanced security."""
+    
+    # Get the correct path for static files
+    static_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
+    template_folder = 'templates'
+    
+    app = Flask(__name__, 
+                instance_relative_config=True,
+                static_folder=static_folder,
+                template_folder=template_folder)
+    
+    # Load configuration
+    app.config.from_object(config_class)
+    
+    # Initialize security configuration
+    config_class.init_app(app)
+    
+    # Enhanced session configuration
+    app.config['SESSION_COOKIE_NAME'] = 'secure_chat_session'
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
+    
+    # Ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path, mode=0o700)  # Secure permissions
+    except OSError:
+        pass  # Directory already exists
+    
+    # Initialize extensions with the app
+    login_manager.init_app(app)
+    csrf.init_app(app)
+    socketio.init_app(app, 
+                      cors_allowed_origins=app.config.get('CORS_ORIGINS', ["*"]),
+                      async_mode='threading',
+                      logger=True if app.config.get('DEVELOPMENT') else False,
+                      engineio_logger=True if app.config.get('DEVELOPMENT') else False)
+
+    # Initialize and register the database module
+    from . import db
+    db.init_app(app)
+
+    # Enhanced user loader with security checks
+    @login_manager.user_loader
+    def load_user(user_id):
+        from .db import get_db
+        from .models import row_to_user
+        
+        try:
+            db_conn = get_db()
+            user_row = db_conn.execute(
+                '''SELECT * FROM users 
+                   WHERE id = ? AND active = 1 AND deleted_at IS NULL
+                   AND (account_locked_until IS NULL OR account_locked_until < ?)''',
+                (user_id, datetime.utcnow().isoformat())
+            ).fetchone()
+            
+            user = row_to_user(user_row)
+            
+            # Additional security checks
+            if user:
+                # Check session token if available
+                stored_token = user_row.get('session_token') if user_row else None
+                current_token = session.get('session_token')
+                
+                if stored_token and current_token and stored_token != current_token:
+                    app.logger.warning(f"Session token mismatch for user {user_id}")
+                    return None
+                
+                # Update last activity
+                db_conn.execute(
+                    'UPDATE users SET last_activity = ? WHERE id = ?',
+                    (datetime.utcnow().isoformat(), user_id)
+                )
+                db_conn.commit()
+            
+            return user
+            
+        except Exception as e:
+            app.logger.error(f"Error loading user {user_id}: {e}")
+            return None
+
+    # Security middleware
+    @app.before_request
+    def security_before_request():
+        """Enhanced security checks before each request"""
+        
+        # Skip security checks for static files
+        if request.endpoint and request.endpoint.startswith('static'):
+            return
+        
+        # Import here to avoid circular imports
+        from .security import rate_limiter, security_manager
+        
+        client_ip = request.remote_addr
+        user_agent = request.headers.get('User-Agent', '')
+        
+        # Rate limiting check
+        if rate_limiter.is_blocked(client_ip):
+            app.logger.warning(f"Blocked request from {client_ip} - rate limit exceeded")
+            return "Rate limit exceeded", 429
+        
+        # Check for suspicious patterns
+        suspicious_patterns = [
+            'sqlmap', 'nikto', 'nmap', 'masscan', 'zap', 'burp',
+            'wget', 'curl', 'python-requests', 'bot', 'crawler'
+        ]
+        
+        if any(pattern in user_agent.lower() for pattern in suspicious_patterns):
+            app.logger.warning(f"Suspicious user agent from {client_ip}: {user_agent}")
+            # Log security event
+            from .db import get_db
+            try:
+                db_conn = get_db()
+                db_conn.execute(
+                    '''INSERT INTO security_logs 
+                       (event_type, ip_address, user_agent, event_description, severity, is_suspicious)
+                       VALUES (?, ?, ?, ?, ?, ?)''',
+                    ('SUSPICIOUS_REQUEST', client_ip, user_agent, 
+                     'Suspicious user agent detected', 'medium', 1)
+                )
+                db_conn.commit()
+            except Exception as e:
+                app.logger.error(f"Failed to log security event: {e}")
+        
+        # Session security
+        if current_user.is_authenticated:
+            # Check session expiry
+            last_activity = session.get('last_activity')
+            if last_activity:
+                last_time = datetime.fromisoformat(last_activity)
+                if datetime.utcnow() - last_time > timedelta(hours=2):
+                    session.clear()
+                    return "Session expired", 401
+            
+            session['last_activity'] = datetime.utcnow().isoformat()
+            
+            # IP change detection
+            session_ip = session.get('ip_address')
+            if session_ip and session_ip != client_ip:
+                app.logger.warning(f"IP change detected for user {current_user.id}: {session_ip} -> {client_ip}")
+                # Optionally force re-authentication
+                # session.clear()
+                # return "Security check required", 401
+        
+        # Set security session data
+        session['ip_address'] = client_ip
+        session.permanent = True
+
+    @app.after_request
+    def security_after_request(response):
+        """Apply security headers after each request"""
+        
+        # Import here to avoid circular imports
+        from .security import security_headers
+        
+        # Add comprehensive security headers
+        response = security_headers.add_security_headers(response)
+        
+        # Additional security measures
+        response.headers['X-Request-ID'] = request.headers.get('X-Request-ID', 'unknown')
+        
+        # Log security-relevant responses
+        if response.status_code in [401, 403, 429]:
+            app.logger.warning(f"Security response {response.status_code} for {request.remote_addr}")
+        
+        return response
+
+    # Error handlers with security considerations
+    @app.errorhandler(404)
+    def not_found_error(error):
+        """Handle 404 errors securely"""
+        # Don't reveal internal structure
+        app.logger.info(f"404 error for {request.remote_addr}: {request.path}")
+        return "Page not found", 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        """Handle 500 errors securely"""
+        from .db import get_db
+        try:
+            db = get_db()
+            db.rollback()
+        except:
+            pass
+        
+        app.logger.error(f"Internal error for {request.remote_addr}: {error}")
+        return "Internal server error", 500
+
+    @app.errorhandler(429)
+    def rate_limit_error(error):
+        """Handle rate limit errors"""
+        app.logger.warning(f"Rate limit exceeded for {request.remote_addr}")
+        return "Too many requests", 429
+
+    # Security CLI commands
+    @app.cli.command()
+    def init_security():
+        """Initialize security settings and create admin user"""
+        from .db import get_db
+        from .security import security_manager
+        
+        click.echo("Initializing security settings...")
+        
+        # Create secure admin password
+        admin_password = security_manager.generate_secure_token(16)
+        admin_hash = security_manager.hash_password_advanced(admin_password)
+        
+        db = get_db()
+        
+        # Check if admin exists
+        admin_user = db.execute(
+            'SELECT id FROM users WHERE username = ?', ('admin',)
+        ).fetchone()
+        
+        if not admin_user:
+            # Create admin user
+            private_key, public_key = security_manager.generate_key_pair()
+            
+            db.execute(
+                '''INSERT INTO users 
+                   (username, display_name, password_hash, public_key, 
+                    private_key_encrypted, active, must_change_password, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                ('admin', 'System Administrator', admin_hash, public_key,
+                 security_manager.encrypt_message(private_key), 1, 1, 
+                 datetime.utcnow().isoformat())
+            )
+            db.commit()
+            
+            click.echo(f"Admin user created with password: {admin_password}")
+            click.echo("⚠️  Change this password immediately after first login!")
+        else:
+            click.echo("Admin user already exists")
+        
+    # Initialize security components after app context is available
+    with app.app_context():
+        from .security import init_security_components
+        init_security_components()
+        
+        # Initialize backup and disaster recovery
+        from .backup_manager import backup_manager, disaster_recovery
+        from cryptography.fernet import Fernet
+        
+        backup_key = Fernet.generate_key()
+        backup_manager.initialize(app.config.get('DATABASE_BACKUP_DIR', 'backups'), backup_key, app)
+        backup_manager.start_automatic_backup(interval_minutes=60)
+        disaster_recovery.setup_signal_handlers()
+        
+        # Initialize local storage manager
+        from .local_storage_manager import device_storage_manager
+        
+        # Initialize server management
+        from .server_manager import server_manager
+        server_manager.start_management()
+        
+        # Initialize cloud deployment for global access (optional)
+        try:
+            from .cloud_deployment import global_access_manager
+            global_access_manager.initialize_global_access()
+        except Exception as e:
+            app.logger.warning(f"Cloud deployment features not available: {e}")
+        
+        click.echo("✅ All enhanced security and management systems initialized")
+
+    # Register Blueprints
+    from .auth import bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+
+    from .main import bp as main_bp
+    app.register_blueprint(main_bp)
+    
+    # Register enhanced API routes
+    from .api_routes import api_bp
+    app.register_blueprint(api_bp)
+    
+    # Register public access routes
+    try:
+        from .public_access_routes import register_public_access_routes
+        register_public_access_routes(app)
+        click.echo("✅ Public access routes registered")
+    except ImportError as e:
+        click.echo(f"⚠️  Public access routes not available: {e}")
+
+    # Import socket events
+    from .main import events
+
+    # Setup logging
+    if not app.debug and not app.testing:
+        # Production logging
+        import logging
+        from logging.handlers import RotatingFileHandler
+        
+        if not os.path.exists('logs'):
+            os.makedirs('logs', mode=0o700)
+        
+        file_handler = RotatingFileHandler(
+            'logs/secure_chat.log', maxBytes=10240000, backupCount=10
+        )
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        ))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+        
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('Secure Chat application startup')
+
+    return app

@@ -1,0 +1,135 @@
+/* login.css - Rich, animated styles for login.html */
+body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: bgMove 15s infinite alternate;
+}
+@keyframes bgMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+}
+.form-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 420px;
+    animation: slideIn 0.8s ease-out;
+}
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(50px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 300;
+}
+.form-field {
+    margin-bottom: 20px;
+    position: relative;
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+}
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.15);
+    outline: none;
+    transform: translateY(-2px);
+}
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.checkbox-field input[type="checkbox"] {
+    width: auto;
+}
+.error-message {
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+    animation: shake 0.5s ease-in-out;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+.submit-btn:active {
+    transform: translateY(-1px);
+}
+.flash-messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+}
+.flash-messages li {
+    padding: 15px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    animation: slideDown 0.5s ease-out;
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.links {
+    text-align: center;
+    margin-top: 25px;
+}
+.links a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+.links a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}

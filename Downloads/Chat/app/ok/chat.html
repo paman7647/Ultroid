@@ -1,0 +1,51 @@
+<!-- app/main/templates/chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+    <script src="{{ url_for('static', filename='main.js') }}" defer></script>
+</head>
+<body>
+    <div id="chat-container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h3>Secure Chat</h3>
+                <a href="{{ url_for('auth.login') }}">Login</a>
+            </div>
+            <div class="sidebar-section">
+                <h4>Contacts</h4>
+                <ul id="contacts" class="chat-list">
+                    <li>No contacts found</li>
+                </ul>
+            </div>
+        </aside>
+        <main id="main-chat">
+            <div id="chat-header">
+                <h2 id="chat-title">Select a contact</h2>
+                <span class="encryption-status">🔒 End-to-End Encrypted</span>
+            </div>
+            <div id="message-list">
+                <div class="message received">Welcome to Secure Chat! Select a contact to start chatting.</div>
+            </div>
+            <div id="chat-footer">
+                <div id="message-input-container">
+                    <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off" required>
+                    <button id="send-button">Send</button>
+                </div>
+                <small class="disappearing-info">Messages disappear after being read.</small>
+            </div>
+        </main>
+    </div>
+    <script>
+    // Fallback JS to show contacts and messages if main.js fails
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('contacts')) {
+            document.getElementById('contacts').innerHTML = '<li>Alice</li><li>Bob</li>';
+        }
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+/* index.css - Rich, animated styles for index.html */
+body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    animation: gradientShift 8s ease infinite;
+}
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.landing-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.hero-section {
+    text-align: center;
+    max-width: 1000px;
+    animation: fadeInUp 1.2s ease-out;
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(80px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.hero-section h1 {
+    font-size: 4rem;
+    color: white;
+    margin-bottom: 20px;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    animation: titleGlow 2s ease-in-out infinite alternate;
+}
+@keyframes titleGlow {
+    from { text-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+    to { text-shadow: 0 4px 20px rgba(255,255,255,0.5); }
+}
+.hero-subtitle {
+    font-size: 1.4rem;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 50px;
+    font-weight: 300;
+}
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 60px 0;
+}
+.feature {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    padding: 40px 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: featureFloat 3s ease-in-out infinite;
+}
+.feature:nth-child(1) { animation-delay: 0s; }
+.feature:nth-child(2) { animation-delay: 1s; }
+.feature:nth-child(3) { animation-delay: 2s; }
+@keyframes featureFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+.feature:hover {
+    transform: translateY(-15px) scale(1.05);
+    background: rgba(255,255,255,0.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.feature-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 20px;
+    animation: iconBounce 2s ease-in-out infinite;
+}
+@keyframes iconBounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+.feature h3 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+.feature p {
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+.cta-buttons {
+    margin-top: 50px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.btn {
+    padding: 18px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+}
+.btn-primary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+    background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+}
+.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.8);
+}
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-5px);
+    border-color: white;
+    box-shadow: 0 15px 35px rgba(255,255,255,0.1);
+}
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    .features {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .btn {
+        width: 80%;
+        text-align: center;
+    }
+}

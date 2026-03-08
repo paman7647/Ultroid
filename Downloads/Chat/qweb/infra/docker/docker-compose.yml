@@ -1,0 +1,210 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: qweb
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d qweb']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    command: ['redis-server', '--appendonly', 'yes', '--maxmemory', '512mb', '--maxmemory-policy', 'allkeys-lru']
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ':9001'
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - minio_data:/data
+
+  clamav:
+    image: mkodockx/docker-clamav:alpine
+    ports:
+      - '3310:3310'
+    volumes:
+      - clamav_data:/var/lib/clamav
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.121.0
+    command: ['--config=/etc/otel-collector-config.yaml']
+    volumes:
+      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - '4317:4317'
+      - '4318:4318'
+
+  prometheus:
+    image: prom/prometheus:v3.4.1
+    command: ['--config.file=/etc/prometheus/prometheus.yml']
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - '9090:9090'
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    ports:
+      - '3001:3000'
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+
+  api:
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    env_file:
+      - ../../.env
+    environment:
+      PYTHON_SERVICE_URL: http://ai-python:8000
+      REDIS_URL: redis://redis:6379
+    ports:
+      - '4000:4000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      clamav:
+        condition: service_started
+      ai-python:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: apps/worker/Dockerfile
+    env_file:
+      - ../../.env
+    environment:
+      PYTHON_SERVICE_URL: http://ai-python:8000
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      clamav:
+        condition: service_started
+      ai-python:
+        condition: service_healthy
+
+  signaling:
+    build:
+      context: ../..
+      dockerfile: apps/signaling/Dockerfile
+    env_file:
+      - ../../.env
+    environment:
+      REDIS_URL: redis://redis:6379
+    ports:
+      - '4100:4100'
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  ai-python:
+    build:
+      context: ../..
+      dockerfile: services/ai-python/Dockerfile
+    env_file:
+      - ../../.env
+    environment:
+      DATABASE_URL: sqlite:////tmp/hybrid_chat.db
+      INTERNAL_API_KEY: ${PYTHON_INTERNAL_API_KEY:-changeme}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - '8000:8000'
+    healthcheck:
+      test: ['CMD', 'python', '-c', 'import urllib.request; urllib.request.urlopen("http://localhost:8000/health")']
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ---- LiveKit SFU (open-source WebRTC media server) ----
+  livekit:
+    image: livekit/livekit-server:v1.8
+    command: --config /etc/livekit.yaml
+    ports:
+      - '7880:7880'   # HTTP / WebSocket
+      - '7881:7881'   # RTC (UDP)
+      - '7882:7882/udp'
+    volumes:
+      - ./livekit/livekit.yaml:/etc/livekit.yaml:ro
+    depends_on:
+      redis:
+        condition: service_started
+
+  # ---- coturn TURN server (NAT traversal for WebRTC) ----
+  coturn:
+    image: coturn/coturn:4.6
+    network_mode: host
+    volumes:
+      - ./coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+    env_file:
+      - ../../.env
+    ports:
+      - '3000:3000'
+    depends_on:
+      api:
+        condition: service_started
+
+  music-bot:
+    build:
+      context: ../..
+      dockerfile: services/music-bot/Dockerfile
+    env_file:
+      - ../../.env
+    environment:
+      API_URL: http://api:4000
+      WS_URL: http://api:4000
+      BOT_TOKEN: ${MUSIC_BOT_TOKEN:-}
+    depends_on:
+      api:
+        condition: service_started
+      redis:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  clamav_data:

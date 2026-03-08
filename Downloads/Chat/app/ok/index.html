@@ -1,0 +1,70 @@
+<!-- app/main/templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Secure Chat</title>
+    <!-- We will add a separate CSS file later for styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="chat-container">
+        <!-- Sidebar for users, groups, and controls -->
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h3>Welcome, {{ current_user.display_name }}</h3>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="user-search-input" placeholder="Search for users...">
+                <div id="user-search-results" class="search-results"></div>
+            </div>
+
+            <div class="sidebar-section">
+                <h4>Private Chats</h4>
+                <ul id="private-chat-list" class="chat-list">
+                    <!-- Private chats will be dynamically added here -->
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <h4>Group Chats</h4>
+                <ul id="group-chat-list" class="chat-list">
+                     <!-- Group chats will be dynamically added here -->
+                </ul>
+                <button id="create-group-btn">New Group</button>
+            </div>
+        </aside>
+
+        <!-- Main chat area -->
+        <main id="main-chat">
+            <header id="chat-header">
+                <h2 id="chat-title">Select a chat to begin</h2>
+                <div id="chat-options"></div>
+            </header>
+
+            <div id="message-list">
+                <!-- Messages will be dynamically added here -->
+            </div>
+
+            <footer id="chat-footer">
+                <div id="message-input-container">
+                    <input type="text" id="message-input" placeholder="Type a message..." disabled>
+                    <button id="send-button" disabled>Send</button>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Modals for creating groups, etc. will be added later -->
+
+    <!-- JavaScript Libraries -->
+    <!-- We load Socket.IO from a CDN for real-time communication -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- We will create this main.js file in a later step -->
+    <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

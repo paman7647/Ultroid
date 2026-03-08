@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 SecureChat Pro - Enhanced UI/UX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='enhanced_chat.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+    <!-- Theme & Settings Panel -->
+    <div id="settings-panel" class="settings-panel">
+        <div class="settings-header">
+            <h3>🎨 Customization</h3>
+            <button id="close-settings" class="close-btn">×</button>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Theme Selection -->
+            <div class="setting-group">
+                <h4>🌈 Theme</h4>
+                <div class="theme-options">
+                    <button class="theme-btn active" data-theme="dark">🌙 Dark</button>
+                    <button class="theme-btn" data-theme="light">☀️ Light</button>
+                    <button class="theme-btn" data-theme="neon">⚡ Neon</button>
+                    <button class="theme-btn" data-theme="ocean">🌊 Ocean</button>
+                    <button class="theme-btn" data-theme="forest">🌲 Forest</button>
+                    <button class="theme-btn" data-theme="sunset">🌅 Sunset</button>
+                </div>
+            </div>
+            
+            <!-- Message Shape -->
+            <div class="setting-group">
+                <h4>💬 Message Style</h4>
+                <div class="message-style-options">
+                    <button class="style-btn active" data-style="rounded">🔴 Rounded</button>
+                    <button class="style-btn" data-style="square">⬜ Square</button>
+                    <button class="style-btn" data-style="bubble">💭 Bubble</button>
+                    <button class="style-btn" data-style="minimal">➖ Minimal</button>
+                    <button class="style-btn" data-style="retro">📺 Retro</button>
+                    <button class="style-btn" data-style="glass">💎 Glass</button>
+                </div>
+            </div>
+            
+            <!-- Privacy Settings -->
+            <div class="setting-group">
+                <h4>🔒 Privacy</h4>
+                <div class="privacy-options">
+                    <label class="switch">
+                        <input type="checkbox" id="show-online-status" checked>
+                        <span class="slider">👁️ Show Online Status</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" id="show-last-seen" checked>
+                        <span class="slider">⏰ Show Last Seen</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" id="read-receipts" checked>
+                        <span class="slider">✓ Read Receipts</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" id="typing-indicators" checked>
+                        <span class="slider">✍️ Typing Indicators</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" id="auto-delete" checked>
+                        <span class="slider">🔥 Auto-Delete Messages</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Notification Settings -->
+            <div class="setting-group">
+                <h4>🔔 Notifications</h4>
+                <div class="notification-options">
+                    <label class="switch">
+                        <input type="checkbox" id="sound-notifications" checked>
+                        <span class="slider">🔊 Sound</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" id="desktop-notifications" checked>
+                        <span class="slider">🖥️ Desktop</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" id="vibration" checked>
+                        <span class="slider">📳 Vibration</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Chat Interface -->
+    <div id="chat-container" class="chat-container">
+        <!-- Enhanced Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <div class="avatar online">
+                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23007bff'/><text x='50' y='60' font-size='40' text-anchor='middle' fill='white'>{{ current_user.username[0].upper() if current_user.is_authenticated else 'U' }}</text></svg>" alt="Profile">
+                        <div class="status-indicator"></div>
+                    </div>
+                    <div class="user-info">
+                        <h3>{{ current_user.username if current_user.is_authenticated else 'User' }}</h3>
+                        <p class="status-text">Online</p>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button id="settings-btn" class="icon-btn" title="Settings">⚙️</button>
+                    <button id="theme-toggle" class="icon-btn" title="Toggle Theme">🌓</button>
+                    <a href="{{ url_for('auth.logout') if current_user.is_authenticated else '#' }}" class="icon-btn" title="Logout">🚪</a>
+                </div>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="contact-search" placeholder="🔍 Search contacts..." class="search-input">
+            </div>
+            
+            <!-- Active Contacts -->
+            <div class="contacts-section">
+                <h4 class="section-title">
+                    <span>👥 Contacts</span>
+                    <span id="online-count" class="online-count">3 online</span>
+                </h4>
+                <ul id="contacts-list" class="contacts-list">
+                    <!-- Contacts will be populated by JavaScript -->
+                </ul>
+            </div>
+            
+            <!-- Recent Chats -->
+            <div class="recent-section">
+                <h4 class="section-title">💬 Recent</h4>
+                <ul id="recent-chats" class="recent-list">
+                    <!-- Recent chats will be populated by JavaScript -->
+                </ul>
+            </div>
+        </aside>
+        
+        <!-- Main Chat Area -->
+        <main id="main-chat" class="main-chat">
+            <!-- Chat Header -->
+            <div id="chat-header" class="chat-header">
+                <div class="chat-contact-info">
+                    <div class="contact-avatar">
+                        <img id="chat-avatar" src="" alt="Contact">
+                        <div id="contact-status" class="status-indicator"></div>
+                    </div>
+                    <div class="contact-details">
+                        <h2 id="chat-title">Select a contact</h2>
+                        <p id="contact-last-seen" class="last-seen">Choose someone to chat with</p>
+                        <div id="typing-indicator" class="typing-indicator">
+                            <span>typing</span>
+                            <div class="typing-dots">
+                                <div></div><div></div><div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-actions">
+                    <button class="icon-btn" id="voice-call-btn" title="Voice Call">📞</button>
+                    <button class="icon-btn" id="video-call-btn" title="Video Call">📹</button>
+                    <button class="icon-btn" id="chat-info-btn" title="Chat Info">ℹ️</button>
+                    <button class="icon-btn" id="chat-menu-btn" title="Menu">⋯</button>
+                </div>
+            </div>
+            
+            <!-- Message Area -->
+            <div id="message-area" class="message-area">
+                <div id="message-list" class="message-list">
+                    <!-- Welcome Message -->
+                    <div class="system-message">
+                        <div class="system-content">
+                            <h3>🔒 Welcome to SecureChat Pro</h3>
+                            <p>End-to-end encrypted messaging with enhanced privacy features</p>
+                            <div class="security-badges">
+                                <span class="badge">🛡️ E2E Encrypted</span>
+                                <span class="badge">🔥 Auto-Delete</span>
+                                <span class="badge">👤 Anonymous</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scroll to Bottom Button -->
+                <button id="scroll-bottom" class="scroll-bottom" style="display: none;">
+                    ⬇️ New messages
+                </button>
+            </div>
+            
+            <!-- Enhanced Message Input -->
+            <div id="chat-footer" class="chat-footer">
+                <!-- File Upload Progress -->
+                <div id="upload-progress" class="upload-progress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span class="progress-text">Uploading... 0%</span>
+                </div>
+                
+                <!-- Message Composer -->
+                <div class="message-composer">
+                    <div class="composer-actions">
+                        <button class="icon-btn" id="emoji-btn" title="Emoji">😀</button>
+                        <button class="icon-btn" id="file-btn" title="Attach File">📎</button>
+                        <input type="file" id="file-input" multiple accept="image/*,video/*,audio/*,text/*,.pdf,.doc,.docx" style="display: none;">
+                    </div>
+                    
+                    <div class="input-container">
+                        <textarea 
+                            id="message-input" 
+                            placeholder="💬 Type your secure message..." 
+                            class="message-input"
+                            rows="1"
+                            maxlength="4000"
+                        ></textarea>
+                        <div class="input-footer">
+                            <span id="char-count" class="char-count">0/4000</span>
+                            <div class="message-options">
+                                <button class="option-btn" id="voice-note-btn" title="Voice Note">🎤</button>
+                                <button class="option-btn" id="schedule-btn" title="Schedule Message">⏰</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="send-button" class="send-button" disabled>
+                        <span class="send-icon">🚀</span>
+                    </button>
+                </div>
+                
+                <!-- Emoji Picker -->
+                <div id="emoji-picker" class="emoji-picker" style="display: none;">
+                    <div class="emoji-categories">
+                        <button class="emoji-cat active" data-cat="recent">🕐</button>
+                        <button class="emoji-cat" data-cat="smileys">😀</button>
+                        <button class="emoji-cat" data-cat="people">👥</button>
+                        <button class="emoji-cat" data-cat="nature">🌿</button>
+                        <button class="emoji-cat" data-cat="food">🍕</button>
+                        <button class="emoji-cat" data-cat="activities">⚽</button>
+                        <button class="emoji-cat" data-cat="travel">✈️</button>
+                        <button class="emoji-cat" data-cat="objects">💡</button>
+                        <button class="emoji-cat" data-cat="symbols">❤️</button>
+                        <button class="emoji-cat" data-cat="flags">🏳️</button>
+                    </div>
+                    <div class="emoji-grid" id="emoji-grid">
+                        <!-- Emojis will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Contact Info Panel -->
+        <div id="contact-info-panel" class="contact-info-panel" style="display: none;">
+            <div class="panel-header">
+                <h3>Contact Info</h3>
+                <button id="close-contact-info" class="close-btn">×</button>
+            </div>
+            <div class="panel-content">
+                <div class="contact-profile">
+                    <div class="large-avatar">
+                        <img id="info-avatar" src="" alt="Contact">
+                        <div class="status-indicator"></div>
+                    </div>
+                    <h2 id="info-name">Contact Name</h2>
+                    <p id="info-status" class="status-text">Last seen recently</p>
+                </div>
+                
+                <div class="contact-actions">
+                    <button class="action-btn">📞 Call</button>
+                    <button class="action-btn">📹 Video</button>
+                    <button class="action-btn">🔇 Mute</button>
+                    <button class="action-btn">🚫 Block</button>
+                </div>
+                
+                <div class="chat-settings">
+                    <h4>Chat Settings</h4>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider">🔔 Notifications</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider">🔒 Encryption</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider">🔥 Auto-Delete</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Message Context Menu -->
+    <div id="message-context-menu" class="context-menu" style="display: none;">
+        <button class="context-item" data-action="reply">↩️ Reply</button>
+        <button class="context-item" data-action="forward">↪️ Forward</button>
+        <button class="context-item" data-action="copy">📋 Copy</button>
+        <button class="context-item" data-action="star">⭐ Star</button>
+        <button class="context-item" data-action="delete">🗑️ Delete</button>
+    </div>
+    
+    <!-- Notification Popup -->
+    <div id="notification-popup" class="notification-popup" style="display: none;">
+        <div class="notification-content">
+            <div class="notification-icon">🔔</div>
+            <div class="notification-text">
+                <h4 id="notification-title">New Message</h4>
+                <p id="notification-message">You have a new message</p>
+            </div>
+            <button id="close-notification" class="close-btn">×</button>
+        </div>
+    </div>
+    
+    <!-- Voice Note Recorder -->
+    <div id="voice-recorder" class="voice-recorder" style="display: none;">
+        <div class="recorder-content">
+            <div class="recording-visual">
+                <div class="pulse-ring"></div>
+                <div class="recording-icon">🎤</div>
+            </div>
+            <div class="recording-info">
+                <span id="recording-time">00:00</span>
+                <span class="recording-text">Recording...</span>
+            </div>
+            <div class="recorder-actions">
+                <button id="cancel-recording" class="cancel-btn">❌ Cancel</button>
+                <button id="send-recording" class="send-btn">✅ Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript embedded directly to avoid loading issues -->
+    <script>
+        // Enhanced SecureChat JavaScript with Advanced Features
+        class SecureChatPro {
+            constructor() {
+                this.currentTheme = localStorage.getItem('chat-theme') || 'dark';
+                this.messageStyle = localStorage.getItem('message-style') || 'rounded';
+                this.privacySettings = this.loadPrivacySettings();
+                this.contacts = new Map();
+                this.currentChat = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.applyTheme();
+                this.applyMessageStyle();
+                this.setupEventListeners();
+                this.loadContacts();
+                this.loadEmojiPicker();
+                
+                console.log('🔒 SecureChat Pro initialized');
+            }
+            
+            // Theme Management
+            applyTheme() {
+                document.body.className = `theme-${this.currentTheme}`;
+                this.updateThemeButtons();
+            }
+            
+            updateThemeButtons() {
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.theme === this.currentTheme);
+                });
+            }
+            
+            changeTheme(theme) {
+                this.currentTheme = theme;
+                localStorage.setItem('chat-theme', theme);
+                this.applyTheme();
+                this.showNotification('Theme changed', `Switched to ${theme} theme`);
+            }
+            
+            // Message Style Management
+            applyMessageStyle() {
+                document.body.className = document.body.className.replace(/message-style-\w+/g, '');
+                document.body.classList.add(`message-style-${this.messageStyle}`);
+                this.updateStyleButtons();
+            }
+            
+            updateStyleButtons() {
+                document.querySelectorAll('.style-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.style === this.messageStyle);
+                });
+            }
+            
+            changeMessageStyle(style) {
+                this.messageStyle = style;
+                localStorage.setItem('message-style', style);
+                this.applyMessageStyle();
+                this.showNotification('Style changed', `Switched to ${style} style`);
+            }
+            
+            // Privacy Settings
+            loadPrivacySettings() {
+                const defaults = {
+                    showOnlineStatus: true,
+                    showLastSeen: true,
+                    readReceipts: true,
+                    typingIndicators: true,
+                    autoDelete: false,
+                    soundNotifications: true,
+                    desktopNotifications: true,
+                    vibration: true
+                };
+                
+                return {
+                    ...defaults,
+                    ...JSON.parse(localStorage.getItem('privacy-settings') || '{}')
+                };
+            }
+            
+            updatePrivacySetting(setting, value) {
+                this.privacySettings[setting] = value;
+                localStorage.setItem('privacy-settings', JSON.stringify(this.privacySettings));
+                this.showNotification('Privacy updated', `${setting} ${value ? 'enabled' : 'disabled'}`);
+            }
+            
+            // Contact Management
+            loadContacts() {
+                const mockContacts = [
+                    {
+                        id: 1,
+                        name: '🤖 SecureBot',
+                        avatar: this.generateAvatar('SB'),
+                        status: 'online',
+                        lastSeen: 'Online',
+                        unreadCount: 0,
+                        lastMessage: 'Welcome to SecureChat Pro!'
+                    },
+                    {
+                        id: 2,
+                        name: '👤 Alice Cooper',
+                        avatar: this.generateAvatar('AC'),
+                        status: 'online',
+                        lastSeen: 'Online',
+                        unreadCount: 3,
+                        lastMessage: 'Hey! How are you doing?'
+                    },
+                    {
+                        id: 3,
+                        name: '👨‍💻 Bob Wilson',
+                        avatar: this.generateAvatar('BW'),
+                        status: 'away',
+                        lastSeen: '5 minutes ago',
+                        unreadCount: 0,
+                        lastMessage: 'Working on something cool!'
+                    }
+                ];
+                
+                mockContacts.forEach(contact => {
+                    this.contacts.set(contact.id, contact);
+                });
+                
+                this.renderContacts();
+                this.updateOnlineCount();
+            }
+            
+            generateAvatar(initials) {
+                const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+                const color = colors[initials.charCodeAt(0) % colors.length];
+                
+                return `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='${encodeURIComponent(color)}'/><text x='50' y='60' font-size='32' text-anchor='middle' fill='white' font-family='Arial'>${initials}</text></svg>`;
+            }
+            
+            renderContacts() {
+                const contactsList = document.getElementById('contacts-list');
+                const recentList = document.getElementById('recent-chats');
+                
+                if (!contactsList) return;
+                
+                contactsList.innerHTML = '';
+                if (recentList) recentList.innerHTML = '';
+                
+                this.contacts.forEach(contact => {
+                    const contactElement = this.createContactElement(contact);
+                    contactsList.appendChild(contactElement);
+                    
+                    if (contact.lastMessage && recentList) {
+                        const recentElement = this.createContactElement(contact);
+                        recentList.appendChild(recentElement);
+                    }
+                });
+            }
+            
+            createContactElement(contact) {
+                const li = document.createElement('li');
+                li.className = 'contact-item';
+                li.dataset.contactId = contact.id;
+                
+                li.innerHTML = `
+                    <div class="contact-info">
+                        <div class="contact-avatar">
+                            <img src="${contact.avatar}" alt="${contact.name}">
+                            <div class="status-indicator ${contact.status}"></div>
+                        </div>
+                        <div class="contact-details">
+                            <span class="contact-name">${contact.name}</span>
+                            <span class="contact-last-message">${contact.lastMessage || 'No messages yet'}</span>
+                        </div>
+                    </div>
+                    <div class="contact-meta">
+                        ${contact.unreadCount > 0 ? `<span class="unread-count">${contact.unreadCount}</span>` : ''}
+                    </div>
+                `;
+                
+                li.addEventListener('click', () => this.selectContact(contact.id));
+                return li;
+            }
+            
+            selectContact(contactId) {
+                const contact = this.contacts.get(contactId);
+                if (!contact) return;
+                
+                this.currentChat = contact;
+                
+                document.querySelectorAll('.contact-item').forEach(el => {
+                    el.classList.toggle('active', el.dataset.contactId == contactId);
+                });
+                
+                this.updateChatHeader(contact);
+                this.loadChatMessages(contactId);
+                
+                contact.unreadCount = 0;
+                this.renderContacts();
+            }
+            
+            updateChatHeader(contact) {
+                const chatTitle = document.getElementById('chat-title');
+                const chatAvatar = document.getElementById('chat-avatar');
+                const contactStatus = document.getElementById('contact-status');
+                const contactLastSeen = document.getElementById('contact-last-seen');
+                
+                if (chatTitle) chatTitle.textContent = contact.name;
+                if (chatAvatar) chatAvatar.src = contact.avatar;
+                if (contactStatus) contactStatus.className = `status-indicator ${contact.status}`;
+                if (contactLastSeen) contactLastSeen.textContent = contact.lastSeen;
+            }
+            
+            updateOnlineCount() {
+                const onlineCount = Array.from(this.contacts.values()).filter(c => c.status === 'online').length;
+                const onlineCountEl = document.getElementById('online-count');
+                if (onlineCountEl) {
+                    onlineCountEl.textContent = `${onlineCount} online`;
+                }
+            }
+            
+            loadChatMessages(contactId) {
+                const messageList = document.getElementById('message-list');
+                if (!messageList) return;
+                
+                messageList.innerHTML = '';
+                
+                const mockMessages = {
+                    1: [
+                        {
+                            id: 1,
+                            type: 'received',
+                            content: '🛡️ Welcome to SecureChat Pro! Your messages are protected.',
+                            timestamp: new Date(Date.now() - 300000)
+                        }
+                    ],
+                    2: [
+                        {
+                            id: 2,
+                            type: 'received',
+                            content: 'Hey! How are you doing?',
+                            timestamp: new Date(Date.now() - 120000)
+                        }
+                    ],
+                    3: [
+                        {
+                            id: 3,
+                            type: 'received',
+                            content: 'Working on something exciting! 🚀',
+                            timestamp: new Date(Date.now() - 600000)
+                        }
+                    ]
+                };
+                
+                const messages = mockMessages[contactId] || [];
+                messages.forEach(message => this.addMessage(message, false));
+                
+                this.scrollToBottom();
+            }
+            
+            addMessage(messageData, animate = true) {
+                const messageList = document.getElementById('message-list');
+                if (!messageList) return;
+                
+                const messageElement = document.createElement('div');
+                messageElement.className = `message ${messageData.type}`;
+                
+                messageElement.innerHTML = `
+                    <div class="message-content">
+                        ${messageData.content}
+                    </div>
+                    <div class="message-meta">
+                        <span class="message-time">${this.formatTime(messageData.timestamp)}</span>
+                    </div>
+                `;
+                
+                messageList.appendChild(messageElement);
+                this.scrollToBottom();
+            }
+            
+            sendMessage() {
+                const input = document.getElementById('message-input');
+                if (!input || !this.currentChat) return;
+                
+                const content = input.value.trim();
+                if (!content) return;
+                
+                const messageData = {
+                    id: Date.now(),
+                    type: 'sent',
+                    content: content,
+                    timestamp: new Date()
+                };
+                
+                this.addMessage(messageData);
+                input.value = '';
+                this.toggleSendButton();
+                
+                // Simulate bot response
+                if (this.currentChat.id === 1) {
+                    setTimeout(() => {
+                        const responses = [
+                            'Message received and encrypted! 🔒',
+                            'Your data is secure with us! 🛡️',
+                            'Try the different themes! 🎨',
+                            'Check out the message styles! 💬'
+                        ];
+                        const response = responses[Math.floor(Math.random() * responses.length)];
+                        
+                        this.addMessage({
+                            id: Date.now() + 1,
+                            type: 'received',
+                            content: response,
+                            timestamp: new Date()
+                        });
+                    }, 1000 + Math.random() * 2000);
+                }
+            }
+            
+            setupEventListeners() {
+                // Settings panel
+                const settingsBtn = document.getElementById('settings-btn');
+                if (settingsBtn) {
+                    settingsBtn.addEventListener('click', () => this.toggleSettingsPanel());
+                }
+                
+                const closeSettings = document.getElementById('close-settings');
+                if (closeSettings) {
+                    closeSettings.addEventListener('click', () => this.closeSettingsPanel());
+                }
+                
+                // Theme buttons
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.changeTheme(btn.dataset.theme));
+                });
+                
+                // Style buttons
+                document.querySelectorAll('.style-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.changeMessageStyle(btn.dataset.style));
+                });
+                
+                // Privacy settings
+                document.querySelectorAll('.settings-panel input[type="checkbox"]').forEach(checkbox => {
+                    const setting = checkbox.id.replace(/-/g, '');
+                    checkbox.checked = this.privacySettings[setting] || false;
+                    
+                    checkbox.addEventListener('change', () => {
+                        this.updatePrivacySetting(setting, checkbox.checked);
+                    });
+                });
+                
+                // Message input
+                const messageInput = document.getElementById('message-input');
+                if (messageInput) {
+                    messageInput.addEventListener('input', () => this.toggleSendButton());
+                    messageInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            this.sendMessage();
+                        }
+                    });
+                }
+                
+                // Send button
+                const sendButton = document.getElementById('send-button');
+                if (sendButton) {
+                    sendButton.addEventListener('click', () => this.sendMessage());
+                }
+                
+                // Emoji button
+                const emojiBtn = document.getElementById('emoji-btn');
+                if (emojiBtn) {
+                    emojiBtn.addEventListener('click', () => this.toggleEmojiPicker());
+                }
+            }
+            
+            toggleSettingsPanel() {
+                const panel = document.getElementById('settings-panel');
+                if (panel) panel.classList.toggle('open');
+            }
+            
+            closeSettingsPanel() {
+                const panel = document.getElementById('settings-panel');
+                if (panel) panel.classList.remove('open');
+            }
+            
+            toggleSendButton() {
+                const input = document.getElementById('message-input');
+                const button = document.getElementById('send-button');
+                
+                if (input && button) {
+                    button.disabled = !input.value.trim();
+                }
+            }
+            
+            scrollToBottom() {
+                const messageList = document.getElementById('message-list');
+                if (messageList) {
+                    messageList.scrollTop = messageList.scrollHeight;
+                }
+            }
+            
+            loadEmojiPicker() {
+                this.emojiCategories = {
+                    recent: ['😀', '😂', '🥰', '😎', '🤔', '👍', '❤️', '🎉'],
+                    smileys: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣'],
+                    people: ['👋', '🤚', '🖐', '✋', '👌', '🤏', '✌️', '🤞'],
+                    nature: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'],
+                    food: ['🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓'],
+                    activities: ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉'],
+                    travel: ['🚗', '🚕', '🚙', '🚌', '🚎', '🏎', '🚓', '🚑'],
+                    objects: ['💡', '🔦', '🏮', '📱', '💻', '⌨️', '🖥', '🖨']
+                };
+                
+                this.setupEmojiPicker();
+            }
+            
+            setupEmojiPicker() {
+                const categories = document.querySelectorAll('.emoji-cat');
+                categories.forEach(cat => {
+                    cat.addEventListener('click', () => {
+                        this.showEmojiCategory(cat.dataset.cat);
+                        categories.forEach(c => c.classList.remove('active'));
+                        cat.classList.add('active');
+                    });
+                });
+                
+                this.showEmojiCategory('recent');
+            }
+            
+            showEmojiCategory(category) {
+                const grid = document.getElementById('emoji-grid');
+                if (!grid || !this.emojiCategories[category]) return;
+                
+                grid.innerHTML = '';
+                
+                this.emojiCategories[category].forEach(emoji => {
+                    const button = document.createElement('button');
+                    button.className = 'emoji-item';
+                    button.textContent = emoji;
+                    button.addEventListener('click', () => this.insertEmoji(emoji));
+                    grid.appendChild(button);
+                });
+            }
+            
+            insertEmoji(emoji) {
+                const input = document.getElementById('message-input');
+                if (input) {
+                    input.value += emoji;
+                    input.focus();
+                    this.toggleSendButton();
+                }
+                this.hideEmojiPicker();
+            }
+            
+            toggleEmojiPicker() {
+                const picker = document.getElementById('emoji-picker');
+                if (picker) {
+                    picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+                }
+            }
+            
+            hideEmojiPicker() {
+                const picker = document.getElementById('emoji-picker');
+                if (picker) picker.style.display = 'none';
+            }
+            
+            showNotification(title, message) {
+                const popup = document.getElementById('notification-popup');
+                const titleEl = document.getElementById('notification-title');
+                const messageEl = document.getElementById('notification-message');
+                
+                if (popup && titleEl && messageEl) {
+                    titleEl.textContent = title;
+                    messageEl.textContent = message;
+                    popup.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        popup.style.display = 'none';
+                    }, 3000);
+                }
+            }
+            
+            formatTime(date) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.secureChatPro = new SecureChatPro();
+        });
+    </script>
+</body>
+</html>

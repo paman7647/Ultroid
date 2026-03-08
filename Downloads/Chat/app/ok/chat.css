@@ -1,0 +1,194 @@
+body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    min-height: 100vh;
+    margin: 0;
+    animation: bgMove 10s infinite alternate;
+}
+@keyframes bgMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+}
+#chat-container {
+    display: flex;
+    height: 90vh;
+    max-width: 1100px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(60,60,120,0.18);
+    overflow: hidden;
+    animation: fadeIn 1s;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: none; }
+}
+#sidebar {
+    width: 300px;
+    background: linear-gradient(135deg, #f7f7f7 60%, #e3e3e3 100%);
+    box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 1.3em;
+    color: #007bff;
+    letter-spacing: 1px;
+}
+.sidebar-header a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1em;
+    margin-top: 8px;
+    display: inline-block;
+    transition: color 0.2s;
+}
+.sidebar-header a:hover {
+    color: #0056b3;
+}
+.sidebar-section {
+    padding: 10px 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+.sidebar-section h4 {
+    padding: 0 20px;
+    margin: 10px 0 5px;
+    font-size: 0.9em;
+    color: #65676b;
+    text-transform: uppercase;
+}
+.chat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.chat-list li {
+    padding: 12px 24px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
+}
+.chat-list li:hover, .chat-list li.active {
+    background: #d1e7fd;
+    transform: scale(1.04);
+}
+#main-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f8fbff;
+}
+#chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid #eee;
+    background: linear-gradient(90deg, #e3f0ff 60%, #f7f7f7 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.encryption-status {
+    color: #28a745;
+    font-size: 1.1em;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+#message-list {
+    flex: 1;
+    padding: 32px 24px;
+    overflow-y: auto;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+.message {
+    position: relative;
+    margin-bottom: 22px;
+    padding: 14px 22px;
+    border-radius: 16px;
+    max-width: 70%;
+    word-break: break-word;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    animation: bubbleIn 0.5s;
+}
+@keyframes bubbleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+.message.sent {
+    background: linear-gradient(135deg, #cce5ff 60%, #e0eafc 100%);
+    align-self: flex-end;
+}
+.message.received {
+    background: linear-gradient(135deg, #e2f0cb 60%, #f7f7f7 100%);
+    align-self: flex-start;
+}
+.message.disappearing {
+    opacity: 0.5;
+    animation: fadeout 1s linear forwards;
+}
+@keyframes fadeout {
+    to { opacity: 0; height: 0; margin: 0; padding: 0; }
+}
+#chat-footer {
+    padding: 18px 24px;
+    border-top: 1px solid #eee;
+    background: linear-gradient(90deg, #e3f0ff 60%, #f7f7f7 100%);
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
+}
+#message-input-container {
+    display: flex;
+}
+#message-input {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid #b3d1f3;
+    border-radius: 20px;
+    margin-right: 10px;
+    font-size: 1em;
+    transition: border 0.2s;
+}
+#message-input:focus {
+    border: 2px solid #007bff;
+    outline: none;
+}
+#send-button {
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #28a745 60%, #218838 100%);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1em;
+    align-self: flex-end;
+    box-shadow: 0 2px 8px rgba(40,167,69,0.08);
+    transition: background 0.2s, transform 0.2s;
+}
+#send-button:hover {
+    background: linear-gradient(135deg, #218838 60%, #28a745 100%);
+    transform: scale(1.05);
+}
+.disappearing-info {
+    color: #888;
+    font-size: 0.95em;
+    margin-top: 8px;
+    text-align: right;
+    animation: infoFade 2s infinite alternate;
+}
+@keyframes infoFade {
+    0% { opacity: 1; }
+    100% { opacity: 0.7; }
+}

@@ -1,0 +1,32 @@
+{
+  "local_ip": "172.20.68.89",
+  "local_port": 5001,
+  "local_urls": [
+    "http://localhost:5001",
+    "http://172.20.68.89:5001"
+  ],
+  "active_tunnels": {
+    "cloudflared": {
+      "url": "https://oil-collectables-tops-villas.trycloudflare.com",
+      "ssl": true,
+      "status": "active",
+      "created": "2026-03-06T17:03:55.881447",
+      "method": "cloudflared"
+    },
+    "localtunnel": {
+      "url": "https://securechat-1772796836.loca.lt",
+      "ssl": true,
+      "status": "active",
+      "created": "2026-03-06T17:04:06.344056",
+      "method": "localtunnel"
+    },
+    "serveo": {
+      "url": "https://securechat-1772796846.serveo.net",
+      "ssl": true,
+      "status": "active",
+      "created": "2026-03-06T17:04:11.360861",
+      "method": "serveo"
+    }
+  },
+  "last_updated": "2026-03-06T17:04:11.364250"
+}
